@@ -234,4 +234,6 @@ A.mkFloor=async()=>{const r=await api('save_floor',{hostel_id:ED.hid,name:$('#nf
 A.delFloor=async()=>{if(!ED?.fid||!confirm('Delete this floor and its beds? Floors with bookings cannot be deleted.'))return;await api('del_floor',{id:ED.fid});await loadH(ED.hid)};
 async function router(){const h=location.hash||'#/';try{if(h.startsWith('#/h/'))await hostelPage(h.slice(4));else if(h==='#/track')trackPage();else if(h.startsWith('#/admin'))await admin();else await home()}catch(e){view(`<div class="wrap"><div class="card empty" style="margin-top:40px">${esc(e.message)}</div></div>`)}}
 addEventListener('hashchange',router);router();
-</script></body></html>
+</script>
+<script src="/floorplan-pro.js"></script>
+</body></html>
