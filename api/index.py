@@ -235,3 +235,9 @@ try:
     _flow.install(globals())
 except Exception as e:
     print("flow module failed:", repr(e))
+
+try:
+    import _ops
+    _ops.install(globals())
+except Exception as e:
+    print("flow module failed:", repr(e))
