@@ -166,6 +166,7 @@ def install(g):
                  if st == 'approved' else 'Sorry, the hostel could not approve your application.')
         return {'ok': 1}
 
+    g['_h'] = dict(mail=mail, uread=uread, apps_of=apps_of, cfg=cfg)
     PUB.update(hostels=hostels, hostel=hostel, apply=apply, login_email=login_email, otp_send=otp_send,
                otp_verify=otp_verify, me=me, plan=plan)
     ADM.update(get_settings=get_settings, save_settings=save_settings, test_mail=test_mail,
