@@ -230,4 +230,8 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(b)
 
 
-import _flow; _flow.install(globals())
+try:
+    import _flow
+    _flow.install(globals())
+except Exception as e:
+    print("flow module failed:", repr(e))
