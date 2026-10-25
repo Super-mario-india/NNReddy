@@ -228,3 +228,6 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(b)))
         self.end_headers()
         self.wfile.write(b)
+
+
+import _flow; _flow.install(globals())
