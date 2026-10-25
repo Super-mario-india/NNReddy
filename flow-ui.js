@@ -48,7 +48,7 @@ A.lgVer=async()=>done(await api('otp_verify',{email:ME.email,code:V('l_c')}));
 A.lgOut=()=>{ut=null;ME=null;sessionStorage.removeItem('ut');go('#/');toast('Logged out')};
 
 /* ---- user account ---- */
-async function mePage(){load();const r=await api('me');ME=r;const full=r.level==='full',R=(l,v)=>`<div><span class="meta">${l}</span><div>${v?esc(v):full?'-':hid}</div></div>`;
+async function mePage(){if(window.mePage2)return window.mePage2();load();const r=await api('me');ME=r;const full=r.level==='full',R=(l,v)=>`<div><span class="meta">${l}</span><div>${v?esc(v):full?'-':hid}</div></div>`;
  view(`<div class="wrap" style="padding:50px 22px;max-width:900px"><h1 style="font-size:44px">Your hostel account</h1><div class="meta" style="margin:10px 0 22px;flex-wrap:wrap">${esc(r.email)} ${chip(full?'ok':'w',full?'Full access':'Basic access')}
  ${full?'':'<button class="btn sm g" data-act="lgSend">Verify with email code</button>'}<button class="btn sm o" data-act="lgOut">${I('out',14)} Log out</button></div>
  ${r.apps.map((a,i)=>{const s=stChip(a.status);return`<div class="card pad" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><h3 style="margin:0">${esc(a.hostels?.name)}</h3>${chip(s[0],s[1])}</div>
