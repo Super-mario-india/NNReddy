@@ -176,7 +176,7 @@ A.track=async()=>{const r=await api('track',{ref:$('#t_r').value,email:$('#t_e')
  $('#tr').innerHTML=`<div style="margin-top:20px;display:grid;gap:10px"><div>${chip(s[0],s[1])} ${chip(v[0],v[1])}</div><div>${esc(r.hostels?.name)}, bed ${esc(r.beds?.code)}</div><div class="meta">Move-in ${esc(r.move_in)} for ${r.months} month(s)</div>${payNote(r.hostels?.phone)}</div>`};
 /* ---------- admin ---------- */
 async function admin(){if(!tok){view(`<div class="wrap" style="max-width:440px;padding:90px 22px"><div class="card pad"><h1 style="font-size:40px;margin-bottom:6px">Admin portal</h1><p style="color:var(--mut);margin-bottom:20px">Sign in to manage hostels, floor plans and bookings.</p><label>Password</label><input id="pw" type="password" autocomplete="current-password"> <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-weight:500"><input type="checkbox" style="width:auto" onchange="document.querySelector('#pw').type=this.checked?'text':'password'"> Show password</label><button class="btn g" style="margin-top:16px;width:100%;justify-content:center" data-act="login">${I('lock',16)} Sign in</button></div></div>`);
-  $('#pw').onkeydown=e=>e.key==='Enter'&&A.login();return}
+  $('#pw').onkeydown=e=>{if(e.key==='Enter')A.login()};return}
  const[hs,bk]=await Promise.all([api('hostels'),api('bookings')]);AD.hs=hs;AD.bk=bk;adminView()}
 A.login=async()=>{const r=await api('login',{password:$('#pw').value});tok=r.token;sessionStorage.setItem('t',tok);admin()};
 A.logout=()=>{tok=null;sessionStorage.removeItem('t');ED=null;go('#/');admin()};
