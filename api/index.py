@@ -230,14 +230,19 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(b)
 
 
-try:
-    import _flow
-    _flow.install(globals())
-except Exception as e:
-    print("flow module failed:", repr(e))
+import importlib.util, traceback
+LOAD_ERR = []
+HERE = os.path.dirname(os.path.abspath(__file__))
 
-try:
-    import _ops
-    _ops.install(globals())
-except Exception as e:
-    print("flow module failed:", repr(e))
+def _load(name):
+    try:
+        spec = importlib.util.spec_from_file_location(name, os.path.join(HERE, name + '.py'))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.install(globals())
+    except Exception:
+        LOAD_ERR.append(name + ': ' + traceback.format_exc()[-1500:])
+
+_load('_flow')
+_load('_ops')
+PUB['diag'] = lambda d: {'errors': LOAD_ERR, 'files': sorted(os.listdir(HERE))}
