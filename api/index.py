@@ -3,7 +3,7 @@ Standard library only, so no requirements.txt is needed. All calls: POST /api/in
 Environment variables: SUPABASE_URL, SUPABASE_SERVICE_KEY, ADMIN_PASSWORD, SESSION_SECRET, HOLD_HOURS (optional).
 Access: PUB actions are open (catalogue, applying, signing in); applicant actions check a signed applicant token
 issued only after an emailed code is verified; ADM actions check a signed admin token. Sign-in actions are rate limited."""
-import json, os, re, hmac, time, hashlib, urllib.request, urllib.parse, urllib.error
+import json, os, re, hmac, time, uuid, base64, hashlib, urllib.request, urllib.parse, urllib.error
 from http.server import BaseHTTPRequestHandler
 
 URL = os.environ.get('SUPABASE_URL', '').rstrip('/')
@@ -20,28 +20,58 @@ class Fail(Exception):
         self.code = code
 
 
-def sb(method, path, body=None):
+def rest(method, path, body=None, prefer='return=representation', timeout=15):
+    """One PostgREST call; returns (parsed body, response headers). Raises HTTPError as-is."""
     if not URL or not KEY:
         raise Fail('Server is not configured: set SUPABASE_URL and SUPABASE_SERVICE_KEY', 500)
-    h = {'apikey': KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation'}
+    h = {'apikey': KEY, 'Content-Type': 'application/json', 'Prefer': prefer}
     if KEY.startswith('eyJ'):
         h['Authorization'] = 'Bearer ' + KEY
     data = json.dumps(body).encode() if body is not None else None
-    req = urllib.request.Request(f'{URL}/rest/v1/{path}', data=data, method=method, headers=h)
+    with urllib.request.urlopen(urllib.request.Request(f'{URL}/rest/v1/{path}', data=data, method=method, headers=h), timeout=timeout) as r:
+        t = r.read()
+        return (json.loads(t) if t else None), r.headers
+
+
+def sb(method, path, body=None, raw=False):
+    """PostgREST call with friendly errors. raw=True passes database errors through unchanged (SQL console)."""
     try:
-        with urllib.request.urlopen(req, timeout=15) as r:
-            t = r.read()
-            return json.loads(t) if t else None
+        return rest(method, path, body, timeout=30 if raw else 15)[0]
     except urllib.error.HTTPError as e:
         try:
-            m = json.loads(e.read()).get('message')
+            j = json.loads(e.read())
+            m = ' '.join(str(j.get(k)) for k in ('message', 'details', 'hint') if j.get(k)) if raw else j.get('message')
         except Exception:
             m = None
+        if raw:
+            raise Fail(m or f'Database error ({e.code})')
         if m and 'violates foreign key' in m:
             m = 'This item has bookings or applications and cannot be deleted. Close them first.'
         elif m and 'applications_one_live_bed' in m:
             m = 'That bed was just taken by someone else. Please pick another.'
+        elif m and 'payments_one_rent_per_month' in m:
+            m = 'Rent for that month was just added by someone else. Refresh to see it.'
+        elif m and ('schema cache' in m or 'does not exist' in m):  # a table or column from a newer update is missing
+            raise Fail(UPGRADE, 503)
         raise Fail(m or 'Database error')
+
+
+UPGRADE = 'Database update needed. Sign in to Admin and open Database to run the update.'
+
+
+# ---- small key-value store on the settings table (hostel profiles, photos, email settings) ----
+def kv_get(key):
+    r = sb('GET', f'settings?key=eq.{q(key)}&select=value')
+    return (r[0]['value'] or {}) if r else {}
+
+
+def kv_put(key, value):
+    if not sb('PATCH', f'settings?key=eq.{q(key)}', {'value': value}):
+        sb('POST', 'settings', {'key': key, 'value': value})
+
+
+def kv_del(key):
+    sb('DELETE', f'settings?key=eq.{q(key)}')
 
 
 def num(v, default=0):
@@ -108,7 +138,8 @@ def geo(u):
             u = urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'}), timeout=6).geturl()
     except Exception:
         pass
-    for p in (r'@(-?\d+\.\d+),(-?\d+\.\d+)', r'!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)',
+    # the place pin (!3d..!4d) beats the map's view centre (@lat,lng), which can be hundreds of metres off
+    for p in (r'!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)', r'@(-?\d+\.\d+),(-?\d+\.\d+)',
               r'[?&](?:q|ll|query|destination)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)'):
         m = re.search(p, u)
         if m:
@@ -117,9 +148,49 @@ def geo(u):
     return (float(m[2]), float(m[1])) if m else (None, None)
 
 
+# ---- hostel profiles: girls / boys, photos, timings, rules, fees (stored as settings 'hostel:<id>') ----
+KINDS = ('girls', 'boys')
+IMG_MAX, IMG_COUNT = 900_000, 8
+
+
+def guess_kind(name):
+    n = (name or '').lower()
+    return 'girls' if re.search(r'girl|women|ladies', n) else 'boys' if re.search(r'boy|\bmen\b|gents', n) else ''
+
+
+def with_profile(h, p):
+    p = p or {}
+    h.update(kind=p.get('kind') or guess_kind(h.get('name')), image_ids=p.get('images') or [],
+             images=[f'/api/index?img={i}' for i in p.get('images') or []], timings=p.get('timings') or [],
+             rules=p.get('rules') or [], fee=p.get('fee'), deposit=p.get('deposit'), notice=p.get('notice') or '')
+    return h
+
+
+def profiles():
+    try:
+        return {r['key'][7:]: r['value'] or {} for r in sb('GET', 'settings?key=like.hostel:*&select=key,value')}
+    except Fail:
+        return {}  # profiles are extras: never let them take the hostel list down
+
+
+def timings(v):
+    rows = v if isinstance(v, list) else [ln.split('|', 1) for ln in str(v or '').splitlines()]
+    out = [[str(a).strip()[:40], str(b).strip()[:60]] for a, b in (r for r in rows if isinstance(r, (list, tuple)) and len(r) == 2)]
+    return [r for r in out if r[0] and r[1]][:20]
+
+
+def lines(v, n=25, size=300):
+    rows = v if isinstance(v, list) else str(v or '').splitlines()
+    return [s for s in (str(x).strip()[:size] for x in rows) if s][:n]
+
+
 # ---- public actions ----
 def hostels(d):
     hs = sb('GET', 'hostels?select=*&order=created_at')
+    P = profiles()
+    for h in hs:
+        with_profile(h, P.get(h['id']))
+    hs.sort(key=lambda h: (KINDS.index(h['kind']) if h['kind'] in KINDS else 2, h['created_at'] or ''))
     agg = {}
     for b in sb('GET', 'bed_live?select=hostel_id,live,price&limit=5000'):
         a = agg.setdefault(b['hostel_id'], {'stat': {}, 'from': None})
@@ -137,7 +208,7 @@ def hostel(d):
     h = sb('GET', f'hostels?id=eq.{i}&select=*')
     if not h:
         raise Fail('Hostel not found', 404)
-    return {'hostel': h[0],
+    return {'hostel': with_profile(h[0], profiles().get(i)),
             'floors': sb('GET', f'floors?hostel_id=eq.{i}&order=level,name'),
             'beds': sb('GET', f'bed_live?hostel_id=eq.{i}&select=id,floor_id,code,price,live&limit=5000')}
 
@@ -187,12 +258,79 @@ def save_hostel(d):
     r = sb('PATCH', f"hostels?id=eq.{uid(hid, 'Hostel')}", f) if hid else sb('POST', 'hostels', f)
     if not r:
         raise Fail('Hostel not found.', 404)
-    return r[0]
+    h = r[0]
+    old = kv_get('hostel:' + h['id'])
+    p = {'kind': d.get('kind') if d.get('kind') in KINDS else '', 'timings': timings(d.get('timings')),
+         'rules': lines(d.get('rules')), 'notice': str(d.get('notice') or '').strip()[:300],
+         'fee': max(num(d.get('fee'), 0), 0) or None, 'deposit': max(num(d.get('deposit'), 0), 0) or None,
+         'images': old.get('images') or []}
+    kv_put('hostel:' + h['id'], p)
+    return with_profile(h, p)
 
 
 def del_hostel(d):
-    sb('DELETE', f"hostels?id=eq.{uid(d.get('id'), 'Hostel')}")
+    hid = uid(d.get('id'), 'Hostel')
+    p = kv_get('hostel:' + hid)
+    sb('DELETE', f'hostels?id=eq.{hid}')
+    for i in p.get('images') or []:
+        kv_del('img:' + i)
+    kv_del('hostel:' + hid)
     return {'ok': 1}
+
+
+# ---- hostel photos: resized in the browser, stored as settings 'img:<id>', served by GET /api/index?img=<id> ----
+def sniff(raw):
+    if raw[:3] == b'\xff\xd8\xff':
+        return 'image/jpeg'
+    if raw[:8] == b'\x89PNG\r\n\x1a\n':
+        return 'image/png'
+    if raw[:4] == b'RIFF' and raw[8:12] == b'WEBP':
+        return 'image/webp'
+    return None
+
+
+def upload_image(d):
+    hid = uid(d.get('hostel_id'), 'Hostel')
+    m = re.fullmatch(r'data:image/[a-z]+;base64,([A-Za-z0-9+/=]+)', str(d.get('data') or ''))
+    try:
+        raw = base64.b64decode(m[1], validate=True) if m else b''
+    except ValueError:
+        raw = b''
+    t = sniff(raw)
+    if not t:
+        raise Fail('Please choose a JPG, PNG or WebP photo.')
+    if len(raw) > IMG_MAX:
+        raise Fail('That photo is too large. Please choose a smaller one.')
+    if not sb('GET', f'hostels?id=eq.{hid}&select=id'):
+        raise Fail('Hostel not found.', 404)
+    p = kv_get('hostel:' + hid)
+    if len(p.get('images') or []) >= IMG_COUNT:
+        raise Fail(f'A hostel can have up to {IMG_COUNT} photos. Remove one first.')
+    i = str(uuid.uuid4())
+    kv_put('img:' + i, {'t': t, 'd': base64.b64encode(raw).decode()})
+    p['images'] = (p.get('images') or []) + [i]
+    kv_put('hostel:' + hid, p)
+    return {'images': p['images']}
+
+
+def set_images(d):  # reorder (first photo is the cover) or remove photos
+    hid = uid(d.get('hostel_id'), 'Hostel')
+    p = kv_get('hostel:' + hid)
+    old, new = p.get('images') or [], [str(i) for i in d.get('images') or []]
+    if not set(new) <= set(old) or len(set(new)) != len(new):
+        raise Fail('The photo list changed. Refresh and try again.', 409)
+    p['images'] = new
+    kv_put('hostel:' + hid, p)
+    for i in set(old) - set(new):
+        kv_del('img:' + i)
+    return {'images': new}
+
+
+def photo(i):
+    r = sb('GET', f"settings?key=eq.{q('img:' + uid(i, 'Photo'))}&select=value")
+    if not r:
+        raise Fail('Photo not found.', 404)
+    return base64.b64decode(r[0]['value']['d']), r[0]['value']['t']
 
 
 def save_floor(d):
@@ -259,7 +397,8 @@ def save_layout(d):
 
 PUB = {'hostels': hostels, 'hostel': hostel}  # book/track are kept for the legacy bookings table but no longer public
 ADM = {'bookings': bookings, 'set_booking': set_booking, 'save_hostel': save_hostel, 'del_hostel': del_hostel,
-       'save_floor': save_floor, 'del_floor': del_floor, 'save_layout': save_layout}
+       'save_floor': save_floor, 'del_floor': del_floor, 'save_layout': save_layout,
+       'upload_image': upload_image, 'set_images': set_images}
 
 
 def route(d, auth):
@@ -303,10 +442,21 @@ class handler(BaseHTTPRequestHandler):
             out, code = {'error': str(e)}, e.code
         except Exception:
             out, code = {'error': 'Unexpected server error.'}, 500
-        b = json.dumps(out, default=str).encode()
+        self.reply(code, json.dumps(out, default=str).encode(), 'application/json', 'no-store')
+
+    def do_GET(self):  # only hostel photos; ids are random and photos never change, so caches may keep them
+        try:
+            b, t = photo((urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get('img') or [''])[0])
+            self.reply(200, b, t, 'public, max-age=31536000, s-maxage=31536000, immutable')
+        except Fail as e:
+            self.reply(e.code, json.dumps({'error': str(e)}).encode(), 'application/json', 'no-store')
+        except Exception:
+            self.reply(500, b'{"error": "Unexpected server error."}', 'application/json', 'no-store')
+
+    def reply(self, code, b, ctype, cache):
         self.send_response(code)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Cache-Control', 'no-store')
+        self.send_header('Content-Type', ctype)
+        self.send_header('Cache-Control', cache)
         self.send_header('X-Content-Type-Options', 'nosniff')
         self.send_header('Content-Length', str(len(b)))
         self.end_headers()
@@ -328,4 +478,5 @@ def _load(name):
 
 _load('_flow')
 _load('_ops')
+_load('_db')
 ADM['diag'] = lambda d: {'errors': LOAD_ERR, 'files': sorted(os.listdir(HERE))}  # admin only: tracebacks are internal

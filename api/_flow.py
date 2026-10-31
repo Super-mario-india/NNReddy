@@ -80,10 +80,11 @@ def install(g):
     def hostel(d):
         if authed(d['_a']):
             return old_hostel(d)
-        h = sb('GET', f"hostels?id=eq.{uid(d.get('id'), 'Hostel')}&select=*")
+        hid = uid(d.get('id'), 'Hostel')
+        h = sb('GET', f'hostels?id=eq.{hid}&select=*')
         if not h:
             raise Fail('Hostel not found', 404)
-        return {'hostel': h[0], 'floors': [], 'beds': []}
+        return {'hostel': g['with_profile'](h[0], g['profiles']().get(hid)), 'floors': [], 'beds': []}
 
     def apply(d):
         throttle('apply:' + d['_ip'], 5, 3600)
@@ -102,8 +103,11 @@ def install(g):
         v['hostel_id'] = uid(v['hostel_id'], 'Hostel')
         if not sb('GET', f"hostels?id=eq.{v['hostel_id']}&select=id"):
             raise Fail('Hostel not found.', 404)
-        if sb('GET', f"applications?email=eq.{q(v['email'])}&hostel_id=eq.{v['hostel_id']}&{OPEN}&select=id"):
-            raise Fail('You already have an open application for this hostel. Sign in with your email to see it.')
+        # girls and boys hostels are run separately: one open application per person across all hostels
+        mine = sb('GET', f"applications?email=eq.{q(v['email'])}&{OPEN}&select=hostel_id,hostels(name)")
+        if mine:
+            where = 'this hostel' if mine[0]['hostel_id'] == v['hostel_id'] else (mine[0].get('hostels') or {}).get('name') or 'another hostel'
+            raise Fail(f'You already have an open application at {where}. Sign in with your email to see it.')
         sb('POST', 'applications', {k: (x or None) for k, x in v.items()})
         c = cfg()
         mail(c.get('admin_email'), f"New hostel application: {v['name']}",

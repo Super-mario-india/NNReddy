@@ -1,6 +1,6 @@
 # N.N Reddy Hostels (HostelAtlas)
 
-A multi-hostel management and bed-allocation platform. Admins add hostels, paste a Google Maps link and draw floor plans. Applicants browse hostels and apply online. Once the hostel approves them, they sign in with a one-time email code, pick their exact bed on the floor plan, pay the owner and submit the payment reference. Staff verify, check them in, and handle maintenance requests.
+Fee tracking and maintenance for the N.N Reddy girls and boys hostels, plus online applications. Visitors see only the two hostels: photos, facilities, timings, rules and location. Applicants apply to one hostel at a time. Once approved, they sign in with a one-time email code, pick their bed on the floor plan, and from then on track their fees and maintenance requests. Staff manage everything from the admin portal, which works on a phone.
 
 **Stack:** static pages (no build step) + one Python serverless function (standard library only) + Supabase Postgres, hosted on Vercel.
 
@@ -12,7 +12,8 @@ nn-reddy-hostels/
   floorplan-pro.js   the floor-plan editor used in Admin > Floor plans
   api/index.py       backend entry point (Vercel Python function): hostels, floors, layouts, admin login
   api/_flow.py       applications, email-code sign-in, email settings, approvals
-  api/_ops.py        bed choice and assignment, payments, check-in / check-out, maintenance requests
+  api/_ops.py        bed choice and assignment, fee history and payments, check-in / check-out, maintenance requests
+  api/_db.py         Admin > Database: table health, the database update script, table browser, SQL console
   README.md          this guide
 ```
 
@@ -22,16 +23,20 @@ There is no `requirements.txt` and no `vercel.json` on purpose: the backend uses
 
 | Area | Status |
 |---|---|
-| Multiple hostels (name, address, phone, cover image, amenities, description) | Working |
-| Google Maps link to embedded map card with "Open in Google Maps" | Working |
+| Girls and boys hostels kept separate: badges, eligibility check, one open application per person, admin filter | Working |
+| Hostel photos uploaded from the admin panel (up to 8, resized on the phone, swipe gallery with full-screen viewer) | Working |
+| Per-hostel timings, house rules, monthly fee, deposit and notice banner | Working |
+| Google Maps link to embedded map card with directions | Working |
+| Fee tracking: joining fee, monthly rent for everyone in one tap, extra charges, payments from residents, office receipts, full history | Working (needs the database update in Admin > Database) |
+| Admin Database tab: table health, update script, table browser with CSV export, optional SQL console | Working (SQL console needs `DB_CONSOLE_KEY`) |
 | Floors, drag-and-drop floor-plan editor with undo, zoom, multi-select and "plan code" (rooms, corridors, beds, washrooms, doors, windows, stairs, lifts, fans, lights, racks, balconies) | Working |
 | Bed inventory created from the layout, with live status (available, reserved, occupied, unavailable) | Working |
 | Four-step online application with house rules | Working |
 | Applicant sign-in with a one-time email code | Working (needs Admin > Email set up) |
 | Floor plan and bed choice, shown only after approval; two people can never get one bed | Working |
-| Fees, UPI payment reference, payment verification, check in, check out, release a held bed | Working |
-| Maintenance requests with status and replies | Working |
-| Admin overview with occupancy, review queue and open requests | Working |
+| Check in, check out, release a held bed | Working |
+| Maintenance requests with categories, status and replies; residents are emailed on every update | Working |
+| Admin overview with dues, payments to confirm, occupancy and new requests; every name and row opens its details | Working |
 | Card or UPI checkout inside the app, visitor register, waitlists | Under development (applicants pay the hostel owner directly) |
 | Document upload and e-agreements | Under development (staff check documents in person) |
 
@@ -197,25 +202,13 @@ revoke execute on function request_bed, set_booking, sync_beds from public, anon
 ```
 
 3. Open **Table Editor**. You should see `hostels`, `floors`, `beds`, `bookings`, `applications`, `otps`, `settings` and `tickets`.
+4. After you deploy (Step 5), sign in to the admin portal, open **Database** (under **More** on a phone), click **Copy SQL**, paste it in a new Supabase SQL query and click **Run**. This adds the fee history table, the monthly rent column and the SQL console function.
 
-### Upgrading a database made with an older version of this guide
+### Updating an existing database
 
-If your project already has these tables, run this instead of the full script. It is safe to run more than once.
+Every new version that needs database changes shows them in **Admin > Database**: missing tables are marked in red, and the **Update SQL** box holds the exact script (also in `api/_db.py`). It is safe to run more than once and never changes your data. Click **Copy SQL**, then **Open Supabase SQL editor**, paste, and click **Run**. Once the SQL console is switched on (Step 5), **Run it here** does the same without leaving the app.
 
-```sql
-create table if not exists otps (email text primary key, h text not null, exp bigint not null, tries int not null default 0);
-create table if not exists settings (key text primary key, value jsonb not null default '{}');
-alter table otps alter column tries set default 0;
-create unique index if not exists applications_one_live_bed on applications (bed_id)
-  where status in ('assigned','paid','verified','resident');
-alter table applications enable row level security;
-alter table otps enable row level security;
-alter table settings enable row level security;
-alter table tickets enable row level security;
--- then paste the whole "create or replace function sync_beds" block from the script above
-```
-
-If creating `applications_one_live_bed` fails, two live applications share a bed. Release one of them in **Admin > Residents** and run it again.
+If the update stops at `applications_one_live_bed`, two live applications share a bed. Release one of them in **Admin > Residents** and run it again.
 
 ## Step 3. Copy your Supabase keys
 
@@ -226,7 +219,7 @@ If creating `applications_one_live_bed` fails, two live applications share a bed
 ## Step 4. Put the code on GitHub
 
 1. Create a **private** repository on https://github.com named `nn-reddy-hostels`.
-2. Put the files in the repository exactly as in **Project layout** above: `index.html`, `floorplan-pro.js` and `README.md` in the root, and the three Python files inside a folder named `api`.
+2. Put the files in the repository exactly as in **Project layout** above: `index.html`, `floorplan-pro.js` and `README.md` in the root, and the four Python files inside a folder named `api`.
 3. From the project folder:
 
 ```bash
@@ -251,6 +244,7 @@ git push -u origin main
 | `SUPABASE_SERVICE_KEY` | `service_role` key from Step 3 |
 | `ADMIN_PASSWORD` | A long, unique password for the admin portal (16+ characters) |
 | `SESSION_SECRET` | A long random string, at least 16 characters (40 is better). It signs every session. Applicant sign-in will not work without it unless `ADMIN_PASSWORD` is 16+ characters. Changing it signs everyone out |
+| `DB_CONSOLE_KEY` | Optional. Turns on the SQL console in **Admin > Database**. Use a long secret (12+ characters) that is different from the admin password; it must be typed every time the console is used. Leave it out to keep the console off |
 | `HOLD_HOURS` | Optional, only used by the old self-service bookings. Default `48`. You can leave it out |
 
 5. Click **Deploy**. After about a minute Vercel shows your live URL such as `https://nn-reddy-hostels.vercel.app`.
@@ -260,22 +254,24 @@ git push -u origin main
 
 1. Open your site and click the lock icon at the top right (or go to `/#/admin`). Sign in with `ADMIN_PASSWORD`.
 2. **Email** tab: enter a Gmail address and a Gmail **app password** (Google Account, Security, turn on 2-Step Verification, then App passwords), the address that should get new-application alerts, and your website address. Click **Send test email**. **Applicants cannot sign in until this works**, because sign-in is by emailed code.
-3. **Hostels** tab, **Add hostel**. Enter the name, area, phone, full address, cover image link, facilities and description.
+3. **Hostels** (under **More** on a phone): tap a hostel or **Add hostel**. Choose **Girls** or **Boys**, then enter the name, area, warden phone, address, monthly fee, deposit, facilities, timings (one per line, like `Breakfast | 7:30 to 9:00 AM`), house rules (one per line) and an optional notice. Save, then **Add photos**: up to 8 per hostel, the first is the cover, and the star makes another photo the cover.
 4. **Google Maps link:** open the hostel in Google Maps, click **Share**, then **Copy link**, and paste it in the form. Short links (`maps.app.goo.gl`), long links and pasted embed code all work. If you leave the link empty, the map is drawn from the address.
 5. **Floor plans** tab: choose the hostel, click **Floor**, name it (for example "Ground floor") and set its level number.
 6. Click objects in the left palette to add them. Drag to move, drag the gold corner handle to resize, and use the panel on the right for exact position (in feet), size and rotation. Select a room and use **Fill with beds** to place several beds at once, or use **Plan code** to type a whole floor. Ctrl+Z undoes.
 7. Give every bed a **unique code** and a monthly rent, then click **Save layout**. This publishes the plan and creates or updates the bed inventory. Moving a bed on the plan never loses its history.
 8. Test the applicant side in a private window: open a hostel, click **Apply to this hostel**, then **Verify email and track** to sign in with the emailed code.
 9. Back in **Applications**, open the application and **Approve** it. The applicant now sees the floor plan under **My stay** and reserves a bed (or you use **Residents > Assign bed**).
-10. In **Residents**: set the **Fee and due date**, **Verify payment** once the money arrives (a submitted UPI reference is shown), **Check in**, and later **Check out**. **Release bed** frees a bed held by someone who never moved in.
-11. Residents report problems under **Requests**. You answer them in the admin **Requests** tab.
+10. In **Residents**, tap the person: **Verify joining payment** once the money arrives (a submitted UPI reference is shown), then **Check in**. **Release bed** frees a bed held by someone who never moved in; **Check out** ends a stay and keeps the fee history.
+11. **Fees** each month: **Charge monthly rent** adds one month of rent to every resident (their own rent from **Fee settings**, else the bed price, else the hostel's monthly fee). Running it twice for the same month is safe. Residents send a UPI reference with **I have paid**; you **Confirm received** or mark **Not received**. Money paid at the office: open the resident and **Record payment**. Mistakes can be deleted from the history.
+12. Residents report problems under **Requests**. Tap one in the admin **Requests** tab to set its status and reply; the resident is emailed every update.
+13. Use **All / Girls / Boys** at the top of the admin pages to work on one hostel at a time. The admin portal signs itself out after 30 minutes without activity.
 
 ## How an application moves
 
 `pending` (applied) → `approved` or `rejected` → `assigned` (bed reserved, fee due) → `paid` (UPI reference submitted) → `verified` (staff confirmed the money) → `resident` (checked in) → `left` (checked out or bed released).
 
 1. Visitors see hostels, facilities, rules and the map, but never bed availability.
-2. An applicant can have one open application per hostel. The hostel is emailed when someone applies.
+2. A person can have one open application at a time, across both hostels. The hostel is emailed when someone applies.
 3. After approval, the applicant signs in with an emailed code and sees the floor plan with live availability. They can reserve one bed, once; staff can change it.
 4. Every step only moves forward from the state it expects. A double click, a stale screen or two staff members acting at once cannot skip or repeat a step.
 5. Two people can never get the same bed. The server checks availability, and the `applications_one_live_bed` index makes the database refuse a second claim on the same bed.
@@ -304,7 +300,8 @@ In Vercel, open **Settings**, then **Domains**, add your domain and follow the D
 - Every API call is checked on the server. Public calls are limited to the hostel catalogue, applying and signing in. Applicant calls need a signed applicant session, which is issued only after the emailed 6-digit code is verified, and each call is checked against that applicant's own application. Admin calls need a signed admin session. The two kinds of session cannot be swapped for each other.
 - Sign-in codes expire after 10 minutes, work once and lock after 5 wrong tries. Admin login, code requests, code checks and new applications are rate limited per IP address. The code-request form never reveals whether an email has applied.
 - Admin sessions expire after 24 hours and applicant sessions after 7 days; both are kept only for the browser tab. Use a strong `ADMIN_PASSWORD` and set `SESSION_SECRET`.
-- The page sets a Content Security Policy and escapes everything it displays, and the server cleans floor-plan data before saving it.
+- The page sets a Content Security Policy and escapes everything it displays, and the server cleans floor-plan data before saving it. Uploaded photos are checked to be real JPG, PNG or WebP images and limited in size and number.
+- The SQL console can change or delete anything in the database, so it is off unless `DB_CONSOLE_KEY` is set. Every run needs that key (kept only in the open tab), statements that change or delete data need an extra tick, runs are rate limited, and the last 100 runs are logged (shown in **Admin > Database**). Leave `DB_CONSOLE_KEY` unset if you prefer to use the Supabase SQL editor.
 - Applicant name, email and phone are personal data. Share admin access only with trusted staff and delete old rejected or cancelled records you no longer need. Review India's Digital Personal Data Protection requirements before collecting identity documents online.
 - Floor plans here are operational maps, not fire-safety certification.
 
@@ -317,7 +314,8 @@ In Vercel, open **Settings**, then **Domains**, add your domain and follow the D
 | Every page says "The server is updating" | `api/_flow.py` or `api/_ops.py` failed to load, so the server refuses public calls rather than run without its access rules. Check the Vercel function logs, or sign in as admin and call the `diag` action |
 | "Too many attempts" | Rate limit. Wait 15 minutes (an hour for repeated applications) |
 | "Incorrect password" | `ADMIN_PASSWORD` is missing or was changed after the last deploy. Redeploy |
-| "Could not find the function ... in the schema cache" | Re-run the SQL from Step 2, then wait a few seconds |
+| "Database update needed" | Open **Admin > Database**, copy the update SQL and run it in Supabase |
+| "Could not find the function ... in the schema cache" | Re-run the update SQL from **Admin > Database**, then wait a few seconds |
 | Site shows 404 at `/` | The Framework Preset must be **Other** and `index.html` must be in the repository root |
 | `/api/index` returns 404 | The file must be at `api/index.py` |
 | Map card shows the wrong place | Paste a fuller Google Maps link, or make sure the address field is complete |
