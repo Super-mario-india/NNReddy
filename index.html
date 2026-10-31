@@ -183,7 +183,7 @@ const TERMS=['Advance is not refundable or transferable under any circumstances.
 const KIND={girls:'Girls',boys:'Boys'},kindL=h=>KIND[h?.kind]||'',kchip=h=>kindL(h)?`<span class="chip kind k-${h.kind}">${kindL(h)} hostel</span>`:'';
 const rulesOf=h=>h?.rules?.length?h.rules:TERMS,photosOf=h=>h?.images?.length?h.images:safe(h?.image_url)?[h.image_url]:[];
 const mapsQ=h=>encodeURIComponent([h.name,h.address,h.city].filter(Boolean).join(', ')),openUrl=h=>safe(h.maps_url)||`https://www.google.com/maps/search/?api=1&query=${mapsQ(h)}`;
-const mapSrc=h=>`https://maps.google.com/maps?q=${h.lat!=null?h.lat+','+h.lng:mapsQ(h)}&z=16&output=embed`,addrOf=h=>[h.address,h.city].filter(Boolean).join(', ');
+const mapSrc=h=>`https://maps.google.com/maps?q=${h.lat!=null?h.lat+','+h.lng:mapsQ(h)}&z=16&output=embed`,addrOf=h=>h.address&&h.city&&h.address.toLowerCase().includes(h.city.toLowerCase())?h.address:[h.address,h.city].filter(Boolean).join(', ');
 
 /* ---------- api: applicant token on public pages, admin token in the admin portal ---------- */
 async function api(a,d={}){const t=S.mode==='admin'?S.tok:S.ut;let r;
