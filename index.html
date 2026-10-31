@@ -6,12 +6,14 @@
 <meta name="description" content="N.N Reddy Hostels: girls and boys hostels in Hyderabad. Apply online, track your fees and maintenance requests.">
 <meta name="theme-color" content="#f5f5f7">
 <title>N.N Reddy Hostels</title>
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('nnr-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){document.documentElement.dataset.theme='light'}</script>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('nnr-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){document.documentElement.dataset.theme='light'}
+/* opening animation: once per visit, never for people who asked for less motion */
+try{const d=document.documentElement;if(sessionStorage.getItem('nnr-intro')||matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('nointro');else{sessionStorage.setItem('nnr-intro','1');d.classList.add('intro')}}catch(e){document.documentElement.classList.add('nointro')}</script>
 <style>
 :root{--bg:#f5f5f7;--sf:#fff;--sf2:#fbfbfd;--gl:rgba(255,255,255,.82);--tx:#1d1d1f;--mu:#6e6e73;--ti:#86868b;--ln:rgba(0,0,0,.08);--ln2:rgba(0,0,0,.16);--fs:rgba(0,0,0,.04);--fh:rgba(0,0,0,.08);--th:#fff;--a2:#b08d57;--ag:linear-gradient(135deg,#ecd9b0,#b08d57);--at:#3a290f;--ok:#1fa64a;--hold:#e08600;--res:#5e5ce6;--occ:#f2304f;--na:#8e8e93;--kg:#d6336c;--kb:#2f6fdb;--s1:0 1px 2px rgba(0,0,0,.05);--s2:0 4px 16px rgba(0,0,0,.07);--s3:0 18px 40px rgba(0,0,0,.13);--s4:0 20px 50px rgba(0,0,0,.22);--e:cubic-bezier(.22,1,.36,1);--sh:cubic-bezier(.32,.72,0,1);--sp:cubic-bezier(.34,1.56,.64,1);--p-fill:rgba(0,0,0,.018);--p-wall:#8f9895;--p-line:#a9b0ad;--p-corr:rgba(0,0,0,.035);--p-grid:rgba(0,0,0,.045);--p-grid2:rgba(0,0,0,.1);--hh:calc(58px + env(safe-area-inset-top,0px));color-scheme:light}
 [data-theme=dark]{--bg:#0b0f0e;--sf:#151a19;--sf2:#1a201f;--gl:rgba(21,26,25,.82);--tx:#f5f5f7;--mu:#9a9aa0;--ti:#68686e;--ln:rgba(255,255,255,.1);--ln2:rgba(255,255,255,.18);--fs:rgba(255,255,255,.05);--fh:rgba(255,255,255,.1);--th:#2c3433;--at:#1a1409;--ok:#30d158;--hold:#ff9f0a;--occ:#ff375f;--kg:#ff6b9d;--kb:#6aa3ff;--s1:0 1px 2px rgba(0,0,0,.3);--s2:0 4px 16px rgba(0,0,0,.4);--s3:0 18px 40px rgba(0,0,0,.5);--s4:0 20px 50px rgba(0,0,0,.65);--p-fill:rgba(255,255,255,.02);--p-wall:#5c6e67;--p-line:#4a5a55;--p-corr:rgba(255,255,255,.04);--p-grid:rgba(255,255,255,.04);--p-grid2:rgba(255,255,255,.09);color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;transition:background .4s var(--e)}body.lock{overflow:hidden}
+body{font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Segoe UI",system-ui,sans-serif;background:radial-gradient(900px 440px at 50% -140px,color-mix(in srgb,var(--a2) 15%,transparent),transparent 72%) no-repeat,var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;transition:background .4s var(--e)}body.lock{overflow:hidden}
 h1,h2,h3,h4{letter-spacing:-.03em;text-wrap:balance;line-height:1.2}button,input,select,textarea{font:inherit;color:inherit}s{text-decoration:none}[hidden]{display:none!important}a{color:inherit}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--a2) 60%,transparent);outline-offset:2px}
 .skip{position:absolute;left:12px;top:-60px;z-index:300;padding:10px 16px;border-radius:99px;background:var(--sf);box-shadow:var(--s3)}.skip:focus{top:10px}
@@ -138,8 +140,31 @@ select.fi{appearance:none;-webkit-appearance:none;padding-right:38px;background-
 @media(max-width:899px){body.adm .atabs{display:none}.ed{grid-template-columns:1fr}.pal{flex-direction:row;overflow-x:auto;scrollbar-width:none}.pal .btn{flex:none}}
 @media(min-width:900px){body.adm .nav{display:none}body.adm.hasnav .w{padding-bottom:60px}body.adm.hasnav .ft{display:block}}
 @media(max-width:560px){.g2{grid-template-columns:1fr}.nav a,.nav button{min-width:60px;padding:8px 6px}.sheet{max-height:96vh}.cv{height:200px}.hm{display:none}.mini{grid-template-columns:1fr 1fr}.tbar .fi{flex:1;min-width:0}.cta{flex-direction:column;align-items:stretch}.br{font-size:15.5px;gap:8px}.br svg{width:28px;height:28px}.ha{gap:6px}.ha .ib{width:38px;height:38px}.ha .bm{padding:6px 12px}}
+/* motion: entrances, reveals, ripples, page transitions */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}@keyframes pop{50%{transform:scale(1.08)}}@keyframes kb{from{transform:scale(1.12)}}@keyframes grow{from{transform:scaleY(0)}}@keyframes rip{to{transform:scale(1);opacity:0}}@keyframes nav-in{from{opacity:0;transform:translateY(140%)}}
+.rv{animation:rise .7s var(--e) both;animation-delay:calc(var(--d0,0ms) + var(--i,0)*var(--st,60ms))}.sr{opacity:0;transform:translateY(24px)}.sr.rv{opacity:1;transform:none}html.intro{--d0:950ms}
+.tn.d::before{transform-origin:top;animation:grow .7s var(--e) both;animation-delay:calc(var(--d0,0ms) + var(--i,0)*90ms + 300ms)}.pick input:checked+span{animation:pop .35s var(--sp)}
+.hero2 .bgi,.gi:first-child img{animation:kb 1.6s var(--e) both}.gi img.fd{opacity:0;transition:opacity .6s var(--e)}.gi img.fd.ld{opacity:1}
+.btn,.li,.led,.atabs a{position:relative;overflow:hidden}.rip{position:absolute;border-radius:50%;background:currentColor;opacity:.16;transform:scale(0);animation:rip .65s var(--e) forwards;pointer-events:none;padding:0!important;margin:0!important;border:0!important}
+.bp::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-110%);transition:transform .8s var(--e);pointer-events:none}@media(hover:hover){.bp:hover::before{transform:translateX(110%)}.tap:hover{transform:translateY(-2px)}.hc:hover .hcb svg{transform:translateX(4px)}}.hcb svg{transition:transform .4s var(--sp)}
+.br svg{transition:transform .6s var(--sp)}.br:hover svg{transform:rotate(-8deg) scale(1.06)}
+.nav{animation:nav-in .7s var(--sp) both}.nav .nth{position:absolute;top:6px;bottom:6px;left:0;width:0;border-radius:20px;background:var(--fh);transition:transform .55s var(--sp),width .55s var(--sp),opacity .3s}.nav .nvi{display:contents}.nav a,.nav button{z-index:1}.nav .on{background:none}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--a2);margin-bottom:10px}.eyebrow::before{content:"";width:22px;height:2px;border-radius:2px;background:var(--ag)}
+#intro{position:fixed;inset:0;z-index:500;display:grid;place-items:center;background:radial-gradient(700px 380px at 50% 40%,color-mix(in srgb,var(--a2) 18%,transparent),transparent 70%),var(--bg);animation:intro-out .65s 1.2s cubic-bezier(.22,1,.36,1) forwards}html.nointro #intro{display:none}
+#intro>div{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}#intro svg{width:78px;height:78px;filter:drop-shadow(0 14px 30px rgba(176,141,87,.38));animation:intro-logo 1s cubic-bezier(.34,1.56,.64,1) both}
+#intro b{font-size:25px;font-weight:700;letter-spacing:-.035em;margin-top:6px;animation:rise .8s .3s cubic-bezier(.22,1,.36,1) both}#intro span{color:var(--mu);font-size:14px;animation:rise .8s .45s cubic-bezier(.22,1,.36,1) both}
+#intro i{display:block;width:120px;height:3px;border-radius:9px;background:var(--fh);overflow:hidden;margin-top:10px;animation:rise .6s .5s both}#intro i::after{content:"";display:block;height:100%;background:var(--ag);transform-origin:left;animation:fill .85s .6s cubic-bezier(.65,0,.35,1) both}
+@keyframes fill{from{transform:scaleX(0)}}@keyframes intro-logo{0%{opacity:0;transform:scale(.4) rotate(-18deg)}60%{opacity:1}}@keyframes intro-out{to{opacity:0;visibility:hidden;transform:scale(1.06)}}
+@media(prefers-reduced-motion:no-preference){#app{view-transition-name:page}.hd{view-transition-name:hd}.nav{view-transition-name:nav}
+ ::view-transition-group(*){animation-duration:.55s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+ ::view-transition-old(page){animation:vt-out .3s cubic-bezier(.4,0,1,1) both}::view-transition-new(page){animation:vt-in .55s cubic-bezier(.22,1,.36,1) both}
+ html[data-dir=back]::view-transition-old(page){animation-name:vt-out-b}html[data-dir=back]::view-transition-new(page){animation-name:vt-in-b}
+ html[data-dir=fade]::view-transition-old(page){animation-name:vt-fo}html[data-dir=fade]::view-transition-new(page){animation-name:vt-fi}
+ html.vt-theme #app,html.vt-theme .hd,html.vt-theme .nav{view-transition-name:none}html.vt-theme::view-transition-old(root),html.vt-theme::view-transition-new(root){animation:none;mix-blend-mode:normal}}
+@keyframes vt-out{to{opacity:0;transform:translateX(-28px)}}@keyframes vt-in{from{opacity:0;transform:translateX(36px)}}@keyframes vt-out-b{to{opacity:0;transform:translateX(28px)}}@keyframes vt-in-b{from{opacity:0;transform:translateX(-36px)}}@keyframes vt-fo{to{opacity:0}}@keyframes vt-fi{from{opacity:0}}
 @media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style></head><body>
+<div id="intro" aria-hidden="true"><div><svg viewBox="0 0 32 32"><defs><linearGradient id="lgi" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0dcb6"/><stop offset="1" stop-color="#a98450"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lgi)"/><path d="M10 23V9l9 14V9" fill="none" stroke="#1a1409" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23.5" cy="9" r="2" fill="#1a1409"/></svg><b>N.N Reddy Hostels</b><span>Girls and boys hostels · Hyderabad</span><i></i></div></div>
 <a class="skip" href="#app">Skip to content</a>
 <header class="hd" id="hd"><a class="br" href="#/" aria-label="N.N Reddy Hostels, home"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgx" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0dcb6"/><stop offset="1" stop-color="#a98450"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lgx)"/><path d="M10 23V9l9 14V9" fill="none" stroke="#1a1409" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23.5" cy="9" r="2" fill="#1a1409"/></svg><span>N.N Reddy Hostels</span></a><div class="ha" id="ha"></div></header>
 <main class="w" id="app" tabindex="-1"></main>
@@ -196,7 +221,31 @@ const soft=(p,f=[])=>p.catch(e=>{if(e===STALE)throw e;return f});
 
 /* ---------- chrome ---------- */
 let tt;function toast(m,bad){const t=$('#ts');t.innerHTML=I(bad?'info':'check')+'<span>'+esc(m)+'</span>';t.className='ts on'+(bad?' bad':'');clearTimeout(tt);tt=setTimeout(()=>t.className='ts'+(bad?' bad':''),bad?4800:2600)}
-function view(h){const m=$('#app');m.innerHTML=h;m.classList.remove('pg');void m.offsetWidth;m.classList.add('pg');syncAll()}
+/* ---------- rendering with motion ----------
+ view(): the first render after a route change slides the page (View Transitions where supported; shared hostel
+ photos morph between screens); everything else rises in with a stagger, and off-screen blocks reveal on scroll. */
+const RM=matchMedia('(prefers-reduced-motion: reduce)');let IO=null;
+function view(h){const m=$('#app'),n=S.nav;S.nav=null;S.last=h;const vt=!!(n?.vt&&document.startViewTransition&&!RM.matches&&document.visibilityState==='visible');
+ const run=()=>{m.innerHTML=h;if(n?.scroll)scrollTo(0,0);enter(m,{vt})};
+ if(!vt)return run();document.documentElement.dataset.dir=n.dir;const t=document.startViewTransition(run);t.ready.catch(()=>{});t.finished.finally(()=>{if(!S.nav)delete document.documentElement.dataset.dir})}
+function quiet(h){if(h===S.last)return false;S.last=h;$('#app').innerHTML=h;enter($('#app'),{none:1});return true}  // fresh data for a page already on screen: no replayed animation
+function enter(root,o={}){syncAll();if(RM.matches||o.none)return;
+ if(!IO&&window.IntersectionObserver)IO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('rv');IO.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px'});
+ const vh=innerHeight,seen=new Set();
+ [root,...root.querySelectorAll('#pane,.grid,.stg,.tl,.mgr,.st,#apl,#rsl')].forEach(gp=>{let i=0;for(const c of gp.children){if(seen.has(c)||c.matches('.apb,.th,.nth'))continue;seen.add(c);const top=c.getBoundingClientRect().top;
+  if(o.vt&&top<vh)continue;  // already moving in with the page slide
+  if(IO&&!o.soft&&top>vh+20){c.classList.add('sr');IO.observe(c)}else{c.style.setProperty('--i',Math.min(i++,10));if(o.soft)c.style.setProperty('--st','28ms');c.classList.add('rv')}}});
+ if(!o.soft)countUp(root)}
+function countUp(root){const d0=document.documentElement.classList.contains('intro')?950:0;
+ root.querySelectorAll('.stile b,.big b,.st b').forEach(el=>{const m=el.textContent.match(/^(\D*)([\d,]+)(\D*)$/),to=m?+m[2].replace(/,/g,''):0;if(!(to>=2))return;
+  const f=n=>m[1]+Math.round(n).toLocaleString('en-IN')+m[3],t0=performance.now()+d0;el.textContent=f(0);
+  const step=t=>{const k=Math.max(0,Math.min(1,(t-t0)/900));el.textContent=f(to*(1-Math.pow(1-k,3)));if(k<1&&el.isConnected)requestAnimationFrame(step)};requestAnimationFrame(step)})}
+document.addEventListener('animationend',e=>{const t=e.target;if(e.animationName==='rise'&&t.classList?.contains('rv'))t.classList.remove('rv','sr')});  // no transforms left behind
+document.addEventListener('load',e=>{if(e.target.tagName==='IMG')e.target.classList.add('ld')},true);document.addEventListener('error',e=>{if(e.target.tagName==='IMG')e.target.classList.add('ld')},true);
+document.addEventListener('pointerdown',e=>{if(RM.matches||e.button)return;const t=e.target.closest('.btn,.tap,.nav a,.nav button,.atabs a,.li,.led');if(!t||t.disabled)return;
+ const r=t.getBoundingClientRect(),s=Math.max(r.width,r.height)*2.2,i=document.createElement('span');i.className='rip';i.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-r.left-s/2}px;top:${e.clientY-r.top-s/2}px`;
+ if(getComputedStyle(t).position==='static')t.style.position='relative';t.appendChild(i);i.addEventListener('animationend',()=>i.remove())},{passive:true});
+setTimeout(()=>{document.documentElement.classList.remove('intro');$('#intro')?.remove()},2000);
 function sync(s){const b=s.querySelector('.on'),t=s.querySelector('.th');if(!b||!t||!b.offsetWidth)return;const first=!t.style.width;if(first)t.style.transition='none';
  t.style.width=b.offsetWidth+'px';t.style.transform=`translateX(${b.offsetLeft}px)`;if(first){void t.offsetWidth;t.style.transition=''}}
 const syncAll=()=>$$('.seg').forEach(sync);
@@ -214,17 +263,23 @@ function head(){const ad=S.mode==='admin',dk=document.documentElement.dataset.th
   +`<button class="ib" data-act="theme" aria-label="Switch to ${dk?'light':'dark'} mode">${I(dk?'sun':'moon')}</button>`;
  document.querySelector('meta[name=theme-color]').content=dk?'#0b0f0e':'#f5f5f7'}
 function navbar(p){const n=$('#nav'),ad=S.mode==='admin',on=ad?!!S.tok&&!!S.AD:!!S.ut;n.hidden=!on;document.body.classList.toggle('hasnav',on);document.body.classList.toggle('adm',ad);if(!on)return;
+ if(!n.querySelector('.nth'))n.innerHTML='<s class="nth"></s><div class="nvi"></div>';const box=n.querySelector('.nvi'),th=n.querySelector('.nth');  // the pill slides between items
  if(ad){const t=p[1]||'overview',c=aCounts(),main=['overview','apps','fees','req'];
-  n.innerHTML=[['overview','Overview','home'],['apps','Applications','id',c.pend],['fees','Fees','wal',c.verify],['req','Requests','wr',c.open]].map(x=>`<a href="#/admin/${x[0]}" class="${t===x[0]?'on':''}"${t===x[0]?' aria-current="page"':''}>${I(x[2],22)}<span>${x[1]}</span>${x[3]?`<span class="bdg">${x[3]}</span>`:''}</a>`).join('')+`<button data-act="aMore" class="${main.includes(t)?'':'on'}">${I('more',22)}<span>More</span></button>`;return}
- const cur=p[0]==='me'?(p[1]||'stay'):!p[0]||p[0]==='h'?'home':'';
- n.innerHTML=[['home','#/','Hostels','home'],['stay','#/me','My stay','user'],['fees','#/me/fees','Fees','wal'],['requests','#/me/requests','Requests','wr']].map(x=>`<a href="${x[1]}" class="${cur===x[0]?'on':''}"${cur===x[0]?' aria-current="page"':''}>${I(x[3],22)}<span>${x[2]}</span></a>`).join('')}
-A.theme=()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;ls('nnr-theme',t);head()};
+  box.innerHTML=[['overview','Overview','home'],['apps','Applications','id',c.pend],['fees','Fees','wal',c.verify],['req','Requests','wr',c.open]].map(x=>`<a href="#/admin/${x[0]}" class="${t===x[0]?'on':''}"${t===x[0]?' aria-current="page"':''}>${I(x[2],22)}<span>${x[1]}</span>${x[3]?`<span class="bdg">${x[3]}</span>`:''}</a>`).join('')+`<button data-act="aMore" class="${main.includes(t)?'':'on'}">${I('more',22)}<span>More</span></button>`}
+ else{const cur=p[0]==='me'?(p[1]||'stay'):!p[0]||p[0]==='h'?'home':'';
+  box.innerHTML=[['home','#/','Hostels','home'],['stay','#/me','My stay','user'],['fees','#/me/fees','Fees','wal'],['requests','#/me/requests','Requests','wr']].map(x=>`<a href="${x[1]}" class="${cur===x[0]?'on':''}"${cur===x[0]?' aria-current="page"':''}>${I(x[3],22)}<span>${x[2]}</span></a>`).join('')}
+ const o=box.querySelector('.on');th.style.opacity=o?1:0;if(o){th.style.width=o.offsetWidth+'px';th.style.transform=`translateX(${o.offsetLeft}px)`}}
+A.theme=(d,btn)=>{const H=document.documentElement,go=()=>{const t=H.dataset.theme==='dark'?'light':'dark';H.dataset.theme=t;ls('nnr-theme',t);head()};
+ if(!document.startViewTransition||RM.matches)return go();  // new theme spreads in a circle from the button
+ const r=btn.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));H.classList.add('vt-theme');
+ const t=document.startViewTransition(go);t.ready.then(()=>H.animate({clipPath:[`circle(0px at ${x}px ${y}px)`,`circle(${R}px at ${x}px ${y}px)`]},{duration:600,easing:'cubic-bezier(.22,1,.36,1)',pseudoElement:'::view-transition-new(root)'})).catch(()=>{});t.finished.finally(()=>H.classList.remove('vt-theme'))};
 addEventListener('scroll',()=>$('#hd').classList.toggle('sc',scrollY>6),{passive:true});addEventListener('resize',syncAll);
 
 /* ---------- sheet (bottom sheet on phones, dialog on desktop) ---------- */
 let lastFocus=null;
 function sheet(t,s,h){const o=$('#ov');if(!o.classList.contains('on'))lastFocus=document.activeElement;$('#stt').textContent=t;$('#sth').textContent=s||'';$('#sb').innerHTML=h;$('#sb').scrollTop=0;$('#xb').innerHTML=I('x');
  o.classList.add('on');$('#sheet').style.transform='';document.body.classList.add('lock');syncAll();
+ if(!RM.matches)[...$('#sb').children].slice(0,10).forEach((c,i)=>{c.style.setProperty('--i',i);c.style.setProperty('--d0','90ms');c.style.setProperty('--st','45ms');c.classList.add('rv')});
  setTimeout(()=>{if(!o.classList.contains('on'))return;const f=$('#sb [autofocus]')||(matchMedia('(pointer:fine)').matches?$('#sb input:not([type=checkbox]):not([type=radio]):not([type=file]),#sb select,#sb textarea'):null);(f||$('#xb')).focus({preventScroll:true})},400)}
 function closeSheet(){if(S.cf){const r=S.cf;S.cf=null;r(false)}const o=$('#ov');if(!o.classList.contains('on'))return;o.classList.remove('on');document.body.classList.remove('lock');lastFocus?.focus?.({preventScroll:true})}
 A.close=closeSheet;
@@ -295,22 +350,22 @@ const legend=()=>`<div class="lgd">${Object.values(LIVE).map(x=>`<span><i class=
 
 /* ---------- public pages: just the two hostels ---------- */
 const GR={girls:['#5a2c45','#1c0e16'],boys:['#2a3a5a','#0e1526'],'':['#2c4a41','#0f1c18']};
-function cover(h,t){const g=GR[h.kind||'']||GR[''],u=photosOf(h)[0];return`<div class="cv" style="--c1:${g[0]};--c2:${g[1]}"><div class="bgi"${bgi(u)}></div>${u?'':I('bld',56)}${kindL(h)?`<span class="gb">${kchip(h)}</span>`:''}${t?`<div class="t"><b>${esc(h.name)}</b>${h.city||h.address?`<small>${I('pin',12)} ${esc(h.city||h.address)}</small>`:''}</div>`:''}</div>`}
+const vtn=h=>`view-transition-name:h-${String(h.id).replace(/[^\w-]/g,'')}`;  // same name on the card and the hostel page = photo morphs
+function cover(h,t,vt){const g=GR[h.kind||'']||GR[''],u=photosOf(h)[0];return`<div class="cv" style="--c1:${g[0]};--c2:${g[1]}${vt?';'+vtn(h):''}"><div class="bgi"${bgi(u)}></div>${u?'':I('bld',56)}${kindL(h)?`<span class="gb">${kchip(h)}</span>`:''}${t?`<div class="t"><b>${esc(h.name)}</b>${h.city||h.address?`<small>${I('pin',12)} ${esc(h.city||h.address)}</small>`:''}</div>`:''}</div>`}
 const openApp=()=>S.me?.apps.find(a=>!['rejected','left'].includes(a.status));
 async function loadMe(){if(S.ut&&!S.me){try{S.me=await api('me')}catch(e){}}return S.me}
 function stayCard(a){const f=a.fees||{},t=S.me.tickets.filter(x=>x.app_id===a.id&&x.status!=='done').length;return`<a class="card pd tap" href="#/me" style="margin-bottom:16px"><div class="r"><div class="grow"><small class="mu" style="font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Your stay</small><h3 style="margin:2px 0 8px">${esc(a.hostels?.name||'')}</h3><div class="row8">${stc(a.status)}${f.balance?chip('--occ',money(f.balance)+' due'):''}${t?chip('--hold',t+' open request'+(t>1?'s':'')):''}</div></div>${I('chev',20).replace('class="ic"','class="ic chev"')}</div></a>`}
-async function homePage(){if(!S.hs)view(`<div class="ph"><div class="sk" style="height:42px;width:60%"></div><div class="sk" style="height:18px;width:80%;margin-top:14px"></div></div><div class="grid hs2">${'<div class="sk" style="height:290px"></div>'.repeat(2)}</div>`);
- const[hs]=await Promise.all([get('hostels'),loadMe()]);S.hs=hs;const mine=openApp();
- view(`<div class="ph"><h1>Choose your hostel</h1><p>Girls and boys hostels are run separately. Open yours to see photos, facilities, timings and rules, then apply.</p></div>
+function homeHTML(hs){const mine=openApp();
+ return`<div class="ph"><span class="eyebrow">Hyderabad</span><h1>Choose your hostel</h1><p>Girls and boys hostels are run separately. Open yours to see photos, facilities, timings and rules, then apply.</p></div>
  ${mine?stayCard(mine):''}
- <div class="grid hs2">${hs.map(h=>`<a class="card hc" href="#/h/${esc(h.id)}">${cover(h,1)}<div class="hcb"><span>${h.fee?`From <b style="color:var(--tx)">${money(h.fee)}</b>/month`:'Photos, facilities, timings and rules'}</span>${I('arrow',18)}</div></a>`).join('')||lockC('Hostels coming soon','The hostel details will be published here shortly.','','bld')}</div>
- ${S.ut?'':`<div class="card pd cta"><div><h3>Already applied or living here?</h3><p class="mu">Sign in with your email to see your application, fees and maintenance requests.</p></div><button class="btn bp" data-act="signin">Sign in</button></div>`}`)}
-async function hostelPage(id){view(`<div class="sk" style="height:40px;width:140px"></div><div class="sk" style="height:320px;margin-top:14px"></div>${skel(2)}`);
- const[r]=await Promise.all([get('hostel',{id}),loadMe()]);const h=S.h=r.hostel,am=(h.amenities||'').split(',').map(s=>s.trim()).filter(Boolean),addr=addrOf(h),ph=photosOf(h),mine=openApp();
- document.title=h.name+' · N.N Reddy Hostels';
+ <div class="grid hs2">${hs.map(h=>`<a class="card hc" href="#/h/${esc(h.id)}">${cover(h,1,1)}<div class="hcb"><span>${h.fee?`From <b style="color:var(--tx)">${money(h.fee)}</b>/month`:'Photos, facilities, timings and rules'}</span>${I('arrow',18)}</div></a>`).join('')||lockC('Hostels coming soon','The hostel details will be published here shortly.','','bld')}</div>
+ ${S.ut?'':`<div class="card pd cta"><div><h3>Already applied or living here?</h3><p class="mu">Sign in with your email to see your application, fees and maintenance requests.</p></div><button class="btn bp" data-act="signin">Sign in</button></div>`}`}
+async function homePage(){const c=S.hs;view(c?homeHTML(c):`<div class="ph"><div class="sk" style="height:42px;width:60%"></div><div class="sk" style="height:18px;width:80%;margin-top:14px"></div></div><div class="grid hs2">${'<div class="sk" style="height:290px"></div>'.repeat(2)}</div>`);
+ const[hs]=await Promise.all([get('hostels'),loadMe()]);S.hs=hs;c?quiet(homeHTML(hs)):view(homeHTML(hs))}
+function hostelHTML(h){const am=(h.amenities||'').split(',').map(s=>s.trim()).filter(Boolean),addr=addrOf(h),ph=photosOf(h),mine=openApp();
  const F=[h.fee&&['Monthly fee',money(h.fee)+' / month'],h.deposit&&['Deposit',money(h.deposit)],kindL(h)&&['Who can stay',kindL(h)+' only']].filter(Boolean);
- view(`<a class="btn bs bm" href="#/">${I('back',16)}Hostels</a>
- ${ph.length?`<div class="gal" id="gal">${ph.map((u,i)=>`<button class="gi" data-act="lb" data-i="${i}" aria-label="Open photo ${i+1} of ${ph.length}"><img src="${esc(u)}" alt="${esc(h.name)}, photo ${i+1}" ${i?'loading="lazy"':''} referrerpolicy="no-referrer"></button>`).join('')}</div>${ph.length>1?`<div class="dots" id="dots">${ph.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>`:''}`:`<div class="hero2">${cover(h,0)}</div>`}
+ return`<a class="btn bs bm" href="#/">${I('back',16)}Hostels</a>
+ ${ph.length?`<div class="gal" id="gal" style="${vtn(h)}">${ph.map((u,i)=>`<button class="gi" data-act="lb" data-i="${i}" aria-label="Open photo ${i+1} of ${ph.length}"><img class="fd" src="${esc(u)}" alt="${esc(h.name)}, photo ${i+1}" ${i?'loading="lazy"':''} referrerpolicy="no-referrer"></button>`).join('')}</div>${ph.length>1?`<div class="dots" id="dots">${ph.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>`:''}`:`<div class="hero2">${cover(h,0,1)}</div>`}
  <div class="ph" style="padding-top:18px">${kchip(h)}<h1>${esc(h.name)}</h1>${addr?`<p>${I('pin',14)} ${esc(addr)}</p>`:''}</div>
  ${h.notice?`<div class="note warn" style="margin:0 0 14px">${I('info',20)}<div>${esc(h.notice)}</div></div>`:''}
  <div class="card pd">${F.map(f=>`<div class="li"><span>${f[0]}</span><b>${esc(f[1])}</b></div>`).join('')}${h.phone?`<a class="li" href="tel:${esc(digits(h.phone))}"><span>Warden / office</span><b>${I('call',14)} ${esc(h.phone)}</b></a>`:''}${addr?`<a class="li" href="${esc(openUrl(h))}" target="_blank" rel="noopener noreferrer"><span>Address</span><b>Open in Maps ${I('ext',13)}</b></a>`:''}</div>
@@ -320,8 +375,12 @@ async function hostelPage(id){view(`<div class="sk" style="height:40px;width:140
  <div class="sec">House rules</div><div class="card pd">${rulesOf(h).map((t,i)=>`<div class="rl"><i>${i+1}</i><span>${esc(t)}</span></div>`).join('')}</div>
  ${h.maps_url||addr?`<div class="sec">Location</div><div class="card map"><iframe loading="lazy" title="Map of ${esc(h.name)}" referrerpolicy="no-referrer-when-downgrade" src="${esc(mapSrc(h))}"></iframe><div class="mb"><span>${esc(addr)}</span><a class="btn bs bm" target="_blank" rel="noopener noreferrer" href="${esc(openUrl(h))}">${I('ext',14)}Directions</a></div></div>`:''}
  <div class="note">${I('lock',20)}<div>Room and bed availability, the floor plan and fees open only after the hostel approves your application.</div></div>
- <div class="apb">${mine?(mine.hostel_id===h.id?`<a class="btn bp bw" href="#/me">View my application</a>`:`<a class="btn bs bw" href="#/me">You have an application at ${esc(mine.hostels?.name||'another hostel')}</a>`):`<button class="btn bp bw" data-act="apply">Apply to this hostel</button>`}</div>`);
- const g=$('#gal');if(g&&$('#dots'))g.onscroll=()=>{const i=Math.round(g.scrollLeft/(g.firstElementChild.offsetWidth+10));$$('#dots i').forEach((d,k)=>d.classList.toggle('on',k===i))}}
+ <div class="apb">${mine?(mine.hostel_id===h.id?`<a class="btn bp bw" href="#/me">View my application</a>`:`<a class="btn bs bw" href="#/me">You have an application at ${esc(mine.hostels?.name||'another hostel')}</a>`):`<button class="btn bp bw" data-act="apply">Apply to this hostel</button>`}</div>`}
+function bindGal(){const g=$('#gal');if(g&&$('#dots'))g.onscroll=()=>{const i=Math.round(g.scrollLeft/(g.firstElementChild.offsetWidth+10));$$('#dots i').forEach((d,k)=>d.classList.toggle('on',k===i))}}
+async function hostelPage(id){const c=S.hs?.find(x=>x.id===id);  // shown at once from the list we already have, refreshed quietly below
+ if(c){S.h=c;document.title=c.name+' · N.N Reddy Hostels';view(hostelHTML(c));bindGal()}else view(`<div class="sk" style="height:40px;width:140px"></div><div class="sk" style="height:320px;margin-top:14px"></div>${skel(2)}`);
+ const[r]=await Promise.all([get('hostel',{id}),loadMe()]);const h=S.h=r.hostel;document.title=h.name+' · N.N Reddy Hostels';
+ if(!c){view(hostelHTML(h));bindGal()}else if(quiet(hostelHTML(h)))bindGal()}
 
 /* ---------- application (4 steps) ---------- */
 let AP={h:null,s:0,f:{}};
@@ -367,7 +426,7 @@ async function mePage(tab){if(!S.ut){view(`<div class="ph"><h1>Your stay</h1><p>
  if((tab||'stay')==='stay'&&a.status==='approved')loadPlan(a).catch(e=>{if(e===STALE)return;const el=$('#pv');if(el)el.innerHTML=`<div class="empty">${esc(e.message)}</div>`})}
 A.meApp=d=>{S.app=d.v;bar();router()};
 function meStay(a,sw,tk){const h=a.hostels||{},i=ORDER.indexOf(a.status),f=a.fees||{},R=(l,v,href)=>v?(href?`<a class="li" href="${esc(href)}"><span>${l}</span><b>${esc(v)}</b></a>`:`<div class="li"><span>${l}</span><b>${esc(v)}</b></div>`):'',open=tk.filter(t=>t.status!=='done').length;
- const tl=`<div class="card tl">${STEP.map((s,k)=>{const d=k<=i,c=k===i+1;return`<div class="tn ${d?'d':c?'c':''}"><div class="ti2">${I(d?'check':s[3],17)}</div><div><h4>${s[0]}</h4><p>${k===2&&d&&a.bed_code?'Bed '+esc(a.bed_code)+' is reserved for you.':d?s[1]:s[2]||s[1]}</p></div></div>`}).join('')}</div>`;
+ const tl=`<div class="card tl">${STEP.map((s,k)=>{const d=k<=i,c=k===i+1;return`<div class="tn ${d?'d':c?'c':''}" style="--i:${k}"><div class="ti2">${I(d?'check':s[3],17)}</div><div><h4>${s[0]}</h4><p>${k===2&&d&&a.bed_code?'Bed '+esc(a.bed_code)+' is reserved for you.':d?s[1]:s[2]||s[1]}</p></div></div>`}).join('')}</div>`;
  const dash=`<div class="st"><a class="card tap" href="#/me/fees"><small>Balance due</small><b style="color:var(${f.balance?'--occ':'--ok'})">${money(f.balance)}</b><span class="mu" style="font-size:12.5px">${f.balance&&f.due_at?'Due '+day(f.due_at):f.credit?money(f.credit)+' in advance':'All paid up'}</span></a><a class="card tap" href="#/me/requests"><small>Requests</small><b>${open}</b><span class="mu" style="font-size:12.5px">${open?'open':'Report a problem'}</span></a></div>`;
  return`<div class="ph">${chip(SCH[a.status]?.[0]||'--na',h.name||'Hostel')}<h1>Hi, ${esc((a.name||'').split(' ')[0])}</h1><p>${a.bed_code?'Bed '+esc(a.bed_code)+' · ':''}${a.status==='resident'&&a.checkin_date?'Living here since '+day(a.checkin_date):'Applied '+day(a.created_at)}</p></div>${sw}
  ${a.status==='rejected'?lockC('Application not approved','Please contact the hostel office if you have questions.','','info'):a.status==='left'?lockC('You have checked out','Thank you for staying with us.','','home'):a.status==='resident'?dash:tl}
@@ -428,7 +487,7 @@ async function adminPage(tab){if(!S.tok){view(`<div class="card pd login"><div c
  if(!ATABS[tab]||(tab==='legacy'&&S.AD&&!S.AD.bk.length))tab='overview';if(!S.AD)view(skel(4));if(!S.AD?.hs)await aLoad();
  if(tab==='mail')S.AD.set=await get('get_settings');if(tab==='db'){S.AD.db=await get('db_status');S.AD.audit=await soft(get('db_audit'))}
  S.AD.tab=tab;navbar(['admin',tab]);view(aFrame(tab,ATABS[tab][1]()));if(tab==='plans')await window.PE?.init()}
-function rerender(){const t=S.AD.tab;$('#pane').innerHTML=ATABS[t][1]();$('#atop').outerHTML=aTop(t);navbar(['admin',t]);syncAll();if(t==='db')dbLoad().catch(e=>toast(e.message,1))}
+function rerender(){const t=S.AD.tab;$('#pane').innerHTML=ATABS[t][1]();$('#atop').outerHTML=aTop(t);navbar(['admin',t]);enter($('#pane'),{soft:1});if(t==='db')dbLoad().catch(e=>toast(e.message,1))}
 function aTop(tab){const AD=S.AD,c=aCounts(),T=Object.keys(ATABS).filter(k=>k!=='legacy'||AD.bk.length);
  return`<div class="atop" id="atop"><div class="atabs" role="navigation" aria-label="Admin sections">${T.map(k=>{const n={apps:c.pend,fees:c.verify,req:c.open}[k];return`<a href="#/admin/${k}" class="${k===tab?'on':''}"${k===tab?' aria-current="page"':''}>${ATABS[k][0]}${n?`<span class="bdg">${n}</span>`:''}</a>`}).join('')}</div>
  <div class="arow">${AD.hs.length>1&&!['hostels','plans','mail','db'].includes(tab)?segH('aScope',[['all','All'],...AD.hs.map(h=>[h.id,esc(kindL(h)||h.name)])],S.scope):''}<span class="grow"></span><button class="ib sm" data-act="aRefresh" aria-label="Refresh" title="Refresh">${I('refresh',17)}</button></div></div>`}
@@ -593,8 +652,10 @@ A.bkGo=async d=>{const p={id:d.id};if(d.s==='v')p.verification='verified';else i
 
 /* ---------- router ---------- */
 function go(h){location.hash===h?setTimeout(router):location.hash=h}
-async function router(){const p=location.hash.replace(/^#\/?/,'').split('/').map(x=>{try{return decodeURIComponent(x)}catch(e){return x}}),rt=++S.rt;
- closeSheet();A.lbClose();bar();S.mode=p[0]==='admin'?'admin':'user';$('#app').classList.toggle('wide',S.mode==='admin');document.title='N.N Reddy Hostels';head();navbar(p);scrollTo(0,0);
+const rank=p=>p[0]==='admin'?20+Math.max(0,Object.keys(ATABS).indexOf(p[1]||'overview')):p[0]==='h'?1:p[0]==='me'?5+Math.max(0,['stay','fees','requests'].indexOf(p[1]||'stay')):0;
+async function router(){const p=location.hash.replace(/^#\/?/,'').split('/').map(x=>{try{return decodeURIComponent(x)}catch(e){return x}}),rt=++S.rt,rk=rank(p);
+ S.nav={dir:S.rk==null||rk===S.rk?'fade':rk>S.rk?'fwd':'back',scroll:1,vt:S.rk!=null};S.rk=rk;  // deeper screens slide in from the right, going back slides from the left
+ closeSheet();A.lbClose();bar();S.mode=p[0]==='admin'?'admin':'user';$('#app').classList.toggle('wide',S.mode==='admin');document.title='N.N Reddy Hostels';head();navbar(p);
  try{if(p[0]==='h'&&p[1])await hostelPage(p[1]);else if(p[0]==='me')await mePage(p[1]||'stay');else if(p[0]==='admin')await adminPage(p[1]||'overview');else await homePage()}
  catch(e){if(e!==STALE&&rt===S.rt)view(`<div style="margin-top:30px">${lockC('Something went wrong',e.message,`<button class="btn bp" style="margin-top:16px" data-act="retry">Try again</button>`,'info')}</div>`)}
  if(rt===S.rt){navbar(p);if(p[0]==='admin'&&p[1]==='db'&&S.AD?.db)dbLoad().catch(e=>toast(e.message,1))}}
