@@ -1,241 +1,451 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self' 'unsafe-inline';style-src 'self' 'unsafe-inline';img-src 'self' https: data:;frame-src https://maps.google.com https://www.google.com;connect-src 'self';object-src 'none';base-uri 'none';form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="description" content="N.N Reddy Hostels: browse our hostels, apply online and pick your exact bed on the floor plan.">
+<meta name="theme-color" content="#f5f5f7">
 <title>N.N Reddy Hostels</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('nnr-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){document.documentElement.dataset.theme='light'}</script>
 <style>
-:root{--bg:#0b1110;--s1:#111a18;--s2:#16211f;--ln:#243430;--tx:#efe9dc;--mut:#8f9d97;--sand:#d8b98a;--sand2:#f0dcb6;--ok:#52c9a3;--hold:#e6a94a;--res:#8091ff;--occ:#e8627c;--na:#4c5753}
-*{box-sizing:border-box;margin:0}
-body{font:14px/1.6 Manrope,system-ui,sans-serif;color:var(--tx);min-height:100vh;background:radial-gradient(1100px 560px at 85% -8%,#1b2a24 0,transparent 62%),radial-gradient(800px 480px at -8% 12%,#16201f 0,transparent 55%),var(--bg)}
-h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:500;letter-spacing:-.01em;line-height:1.15}
-a{color:inherit}
-.ic{flex:none;vertical-align:-3px}
-.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
-.nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(11,17,16,.78);border-bottom:1px solid var(--ln)}
-.nav .wrap{display:flex;align-items:center;height:66px;gap:26px}
-.logo{display:flex;align-items:center;gap:11px;font-family:Fraunces,serif;font-size:21px;text-decoration:none}
-.logo i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,var(--sand2),#a98450);color:#1a1409}
-.nav nav{margin-left:auto;display:flex;gap:6px}
-.nav nav a{padding:8px 14px;border-radius:99px;color:var(--mut);text-decoration:none;display:flex;gap:7px;align-items:center}
-.nav nav a:hover{color:var(--tx);background:var(--s2)}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;border:1px solid var(--ln);background:var(--s2);color:var(--tx);font:600 13.5px Manrope;cursor:pointer;text-decoration:none;transition:.15s}
-.btn:hover{border-color:#3a4f48}.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--sand);outline-offset:2px}
-.btn.g{background:linear-gradient(145deg,var(--sand2),#b08d57);color:#1a1409;border:0}.btn.g:hover{filter:brightness(1.06)}
-.btn.o{background:transparent}.btn.sm{padding:6px 12px;font-size:12.5px;border-radius:9px}.btn:disabled{opacity:.5;cursor:wait}
-.hero{padding:76px 0 40px}.hero h1{font-size:clamp(42px,7vw,84px);max-width:11em}.hero p{color:var(--mut);font-size:17px;max-width:34em;margin-top:18px}
-.srch{margin-top:30px;display:flex;gap:10px;max-width:460px}
-input,select,textarea{width:100%;background:var(--s1);border:1px solid var(--ln);color:var(--tx);border-radius:11px;padding:11px 14px;font:inherit}
-textarea{min-height:84px;resize:vertical}label{display:block;color:var(--mut);font-size:12.5px;margin:0 0 6px;font-weight:600}
-.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));padding:20px 0 70px}
-.card{background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--ln);border-radius:20px;overflow:hidden}
-.hc{text-decoration:none;display:block;transition:.2s}.hc:hover{transform:translateY(-3px);border-color:#3c524a}
-.img{height:190px;background:#1a2a25 center/cover;display:grid;place-items:center;color:#3e5a50}
-.hc .b{padding:18px 20px 20px}.hc h3{font-size:24px}.meta{color:var(--mut);display:flex;gap:8px;align-items:center;margin-top:6px}
-.row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--ln)}
-.chip{display:inline-flex;gap:6px;align-items:center;padding:3px 11px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid var(--ln);color:var(--mut);background:var(--s1)}
-.chip.ok{color:var(--ok);border-color:#255a49}.chip.w{color:var(--hold);border-color:#6a4f1f}.chip.b{color:var(--occ);border-color:#6a2b3a}.chip.i{color:var(--res);border-color:#34407a}.chip.s{color:var(--sand);border-color:#5f4e2f}
-.ph{height:340px;background:#1a2a25 center/cover;border-radius:24px;position:relative;margin-top:26px;border:1px solid var(--ln)}
-.ph::after{content:"";position:absolute;inset:0;border-radius:24px;background:linear-gradient(0deg,rgba(11,17,16,.92),transparent 60%)}
-.ph div{position:absolute;left:30px;bottom:26px;z-index:1}.ph h1{font-size:clamp(34px,5vw,58px)}
-.two{display:grid;gap:22px;grid-template-columns:1.2fr 1fr;margin-top:22px}
-.pad{padding:24px}.pad h3{font-size:22px;margin-bottom:12px}.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.map iframe{width:100%;height:290px;border:0;display:block;filter:grayscale(.35) contrast(1.05)}
-.mapbar{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:14px 18px;border-top:1px solid var(--ln)}.mapbar span{color:var(--mut);font-size:13px}
-.sec{margin:46px 0 14px;display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}.sec h2{font-size:34px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tabs .btn.on{background:var(--sand);color:#1a1409;border-color:var(--sand)}
-.plan{width:100%;height:auto;display:block;background:#0d1514;border-radius:16px;touch-action:none}
-.pl{padding:12px}.leg{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;color:var(--mut);font-size:12.5px}.leg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
-.pick{cursor:pointer}.pick:hover rect:first-child{fill-opacity:.4}.rl{fill:#8f9d97;font:600 12px Manrope}.bl{fill:#efe9dc;font:700 10px Manrope;text-anchor:middle}
-#modal .ov{position:fixed;inset:0;background:rgba(4,8,7,.72);backdrop-filter:blur(6px);display:grid;place-items:center;z-index:50;padding:18px;overflow:auto}
-.mod{background:var(--s1);border:1px solid var(--ln);border-radius:22px;padding:26px;width:min(560px,100%);box-shadow:0 30px 80px rgba(0,0,0,.55);animation:up .22s ease}
-@keyframes up{from{opacity:0;transform:translateY(10px)}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-.mh{display:flex;justify-content:space-between;align-items:start;margin-bottom:16px}.mh h3{font-size:26px}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.f2>.full{grid-column:1/-1}.f2>div{min-width:0}
-.note{display:flex;gap:11px;padding:13px 15px;border-radius:13px;background:#1d2a22;border:1px solid #31493b;color:#cfe0d4;font-size:13px;margin-top:14px}
-.note.w{background:#2a2315;border-color:#5b4a26;color:#ecd9ae}
-.adm{display:grid;grid-template-columns:230px 1fr;gap:26px;padding:34px 0 80px}
-.adm aside{display:flex;flex-direction:column;gap:6px;position:sticky;top:90px;align-self:start}
-.adm aside .btn{justify-content:flex-start;border-color:transparent;background:transparent;color:var(--mut)}.adm aside .btn.on{background:var(--s2);color:var(--tx);border-color:var(--ln)}
-.stats{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.stat{padding:20px}.stat b{font:500 40px Fraunces,serif;display:block}.stat span{color:var(--mut);font-size:13px}
-.tw{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--ln);vertical-align:middle}th{color:var(--mut);font-weight:600;font-size:12.5px}tr:last-child td{border:0}
-.acts{display:flex;gap:6px;flex-wrap:wrap}.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}.bar h2{font-size:32px}
-.mods{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:16px}.mods .card{padding:20px}.mods h3{font-size:19px;margin:10px 0 6px}.mods p{color:var(--mut);font-size:13px}
-.tool{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.tool select{width:auto;min-width:190px}
-.ed{display:grid;grid-template-columns:150px 1fr 230px;gap:14px;align-items:start}.pal{display:flex;flex-direction:column;gap:6px}.pal .btn{justify-content:flex-start}
-.panel{padding:16px;display:grid;gap:10px}.panel .f2{gap:10px}.empty{padding:50px;text-align:center;color:var(--mut)}
-#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,30px);opacity:0;background:var(--s2);border:1px solid var(--ln);padding:12px 20px;border-radius:13px;z-index:99;transition:.25s;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}#toast.bad{border-color:var(--occ)}
-footer{border-top:1px solid var(--ln);padding:30px 0;color:var(--mut);font-size:13px}
-@media(max-width:900px){.two,.adm,.ed{grid-template-columns:1fr}.adm aside{position:static;flex-direction:row;overflow:auto}.pal{flex-direction:row;flex-wrap:wrap}.nav nav a span{display:none}.f2{grid-template-columns:1fr}}
+:root{--bg:#f5f5f7;--sf:#fff;--sf2:#fbfbfd;--gl:rgba(255,255,255,.8);--tx:#1d1d1f;--mu:#6e6e73;--ti:#86868b;--ln:rgba(0,0,0,.08);--ln2:rgba(0,0,0,.16);--fs:rgba(0,0,0,.04);--fh:rgba(0,0,0,.08);--th:#fff;--a2:#b08d57;--ag:linear-gradient(135deg,#ecd9b0,#b08d57);--at:#3a290f;--ok:#1fa64a;--hold:#e08600;--res:#5e5ce6;--occ:#f2304f;--na:#8e8e93;--s1:0 1px 2px rgba(0,0,0,.05);--s2:0 4px 16px rgba(0,0,0,.07);--s3:0 18px 40px rgba(0,0,0,.13);--s4:0 20px 50px rgba(0,0,0,.22);--e:cubic-bezier(.22,1,.36,1);--sh:cubic-bezier(.32,.72,0,1);--sp:cubic-bezier(.34,1.56,.64,1);--p-fill:rgba(0,0,0,.018);--p-wall:#8f9895;--p-line:#a9b0ad;--p-corr:rgba(0,0,0,.035);--p-grid:rgba(0,0,0,.045);--p-grid2:rgba(0,0,0,.1);--hh:calc(58px + env(safe-area-inset-top,0px));color-scheme:light}
+[data-theme=dark]{--bg:#0b0f0e;--sf:#151a19;--sf2:#1a201f;--gl:rgba(21,26,25,.8);--tx:#f5f5f7;--mu:#9a9aa0;--ti:#68686e;--ln:rgba(255,255,255,.1);--ln2:rgba(255,255,255,.18);--fs:rgba(255,255,255,.05);--fh:rgba(255,255,255,.1);--th:#2c3433;--at:#1a1409;--ok:#30d158;--hold:#ff9f0a;--occ:#ff375f;--s1:0 1px 2px rgba(0,0,0,.3);--s2:0 4px 16px rgba(0,0,0,.4);--s3:0 18px 40px rgba(0,0,0,.5);--s4:0 20px 50px rgba(0,0,0,.65);--p-fill:rgba(255,255,255,.02);--p-wall:#5c6e67;--p-line:#4a5a55;--p-corr:rgba(255,255,255,.04);--p-grid:rgba(255,255,255,.04);--p-grid2:rgba(255,255,255,.09);color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;transition:background .4s var(--e)}body.lock{overflow:hidden}
+h1,h2,h3,h4{letter-spacing:-.03em;text-wrap:balance;line-height:1.2}button,input,select,textarea{font:inherit;color:inherit}s{text-decoration:none}[hidden]{display:none!important}a{color:inherit}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--a2) 60%,transparent);outline-offset:2px}
+.skip{position:absolute;left:12px;top:-60px;z-index:300;padding:10px 16px;border-radius:99px;background:var(--sf);box-shadow:var(--s3)}.skip:focus{top:10px}
+.ic{flex:none}.mu{color:var(--mu)}.fine{font-size:12.5px;color:var(--mu);margin:-4px 0 14px}.pl4{padding:0 4px}.row8{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.r{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+/* header + nav */
+.hd{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:var(--hh);padding:env(safe-area-inset-top,0px) max(14px,env(safe-area-inset-right,0px)) 0 max(14px,env(safe-area-inset-left,0px));backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);background:var(--gl);border-bottom:1px solid transparent;transition:border-color .3s}.hd.sc{border-color:var(--ln)}
+.br{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:650;letter-spacing:-.03em;white-space:nowrap;text-decoration:none;min-width:0}.br span{overflow:hidden;text-overflow:ellipsis}.ha{display:flex;align-items:center;gap:8px}
+.ib{width:42px;height:42px;border-radius:99px;border:1px solid var(--ln);background:var(--fs);display:grid;place-items:center;cursor:pointer;transition:transform .3s var(--sp),background .2s;flex:none;text-decoration:none}.ib:active{transform:scale(.92)}.ib:hover{background:var(--fh)}.ib.sm{width:38px;height:38px}
+.nav{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);translate:-50% 0;z-index:45;display:flex;gap:2px;padding:6px;background:var(--gl);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid var(--ln2);border-radius:26px;box-shadow:var(--s4);max-width:calc(100vw - 16px)}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 10px;min-width:66px;border-radius:20px;color:var(--mu);font-size:11px;font-weight:600;text-decoration:none;transition:.3s var(--e)}.nav a.on{background:var(--fh);color:var(--tx)}.nav a.on svg{color:var(--a2)}
+/* layout */
+.w{max-width:1000px;margin:0 auto;padding:16px 16px 60px;outline:0}.w.wide{max-width:1240px}body.hasnav .w{padding-bottom:150px}
+.pg{animation:pg .55s var(--e)}@keyframes pg{from{opacity:0;transform:translateY(12px)}}
+.ft{max-width:1000px;margin:0 auto;padding:10px 20px 40px;color:var(--ti);font-size:12.5px;text-align:center}body.hasnav .ft{display:none}
+.ph{padding:14px 4px 18px}.ph h1{font-size:clamp(28px,6vw,40px);font-weight:700;letter-spacing:-.04em}.ph p{color:var(--mu);margin-top:4px}.ph .chip{margin-bottom:8px}
+.sec{margin:26px 4px 10px;font-size:13px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+/* building blocks */
+.card{background:var(--sf);border-radius:22px;border:1px solid var(--ln);box-shadow:var(--s1);overflow:hidden}.pd{padding:20px}.pd h3{font-size:18px;margin-bottom:10px}.empty{padding:40px 20px;text-align:center;color:var(--mu)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid var(--ln);background:var(--fs);color:var(--mu);white-space:nowrap}.chip i{width:7px;height:7px;border-radius:50%;background:var(--c,var(--ok))}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 20px;border-radius:99px;border:1px solid transparent;font-size:15px;font-weight:600;letter-spacing:-.015em;cursor:pointer;text-decoration:none;transition:transform .3s var(--sp),box-shadow .3s var(--e),filter .2s,background .2s;text-align:center;background:none;white-space:nowrap}.btn:active{transform:scale(.96)}.btn:disabled{opacity:.55;cursor:progress}
+.bp{background:var(--ag);color:var(--at);border-color:rgba(0,0,0,.08);box-shadow:0 4px 14px rgba(176,141,87,.3),inset 0 1px 0 rgba(255,255,255,.45)}.bp:hover{filter:brightness(1.04)}.bs{background:var(--fs);border-color:var(--ln)}.bs:hover{background:var(--fh)}.bd2{background:color-mix(in srgb,var(--occ) 12%,transparent);color:var(--occ)}.bm{min-height:40px;padding:6px 16px;font-size:14px}.bw{width:100%}
+.li{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--ln)}.li:first-child{border:0;padding-top:0}.li:last-child{padding-bottom:0}.li span{color:var(--mu)}.li b{text-align:right;font-weight:600;word-break:break-word}
+.rl{display:flex;gap:12px;padding:8px 0}.rl i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--fs);border:1px solid var(--ln);display:grid;place-items:center;font:600 12px system-ui,sans-serif;font-style:normal;color:var(--mu)}
+.tg{display:flex;flex-wrap:wrap;gap:8px}.tg .chip{font-size:13px;padding:6px 12px}
+.note{display:flex;gap:12px;padding:14px;border-radius:16px;border:1px dashed var(--ln2);background:var(--fs);font-size:13.5px;color:var(--mu);margin-top:14px}.note svg{flex:none;color:var(--a2)}.note b{color:var(--tx)}.note.warn{border-style:solid;border-color:color-mix(in srgb,var(--hold) 45%,transparent);background:color-mix(in srgb,var(--hold) 8%,transparent)}.note.warn svg{color:var(--hold)}
+.lockc{text-align:center;padding:34px 22px;color:var(--mu)}.lockc .bg{width:56px;height:56px;border-radius:50%;margin:0 auto 12px;background:var(--fs);border:1px solid var(--ln);display:grid;place-items:center}.lockc h3{color:var(--tx);margin-bottom:6px}
+.sk{border-radius:22px;background:linear-gradient(90deg,var(--fs) 25%,var(--fh) 50%,var(--fs) 75%);background-size:200% 100%;animation:sk 1.3s linear infinite}@keyframes sk{to{background-position:-200% 0}}
+.seg{display:inline-flex;position:relative;background:var(--fs);padding:3px;border-radius:99px;border:1px solid var(--ln);max-width:100%;overflow-x:auto;scrollbar-width:none}.seg::-webkit-scrollbar{display:none}.seg .th{position:absolute;top:3px;bottom:3px;left:0;width:0;background:var(--th);border-radius:99px;box-shadow:0 2px 8px rgba(0,0,0,.14);transition:transform .5s var(--sh),width .5s var(--sh)}
+.seg button{position:relative;z-index:1;border:0;background:none;padding:8px 14px;border-radius:99px;font-weight:550;font-size:13.5px;color:var(--mu);cursor:pointer;white-space:nowrap}.seg button.on{color:var(--tx);font-weight:600}
+.tbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 16px}.tbar .fi{width:auto;min-width:180px;margin:0}
+/* public */
+.hero{padding:26px 4px 26px}.hero h1{font-size:clamp(34px,7vw,60px);font-weight:700;letter-spacing:-.045em;margin-top:12px;line-height:1.05}.gt{background:var(--ag);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{color:var(--mu);font-size:17px;max-width:34em;margin-top:14px}
+.srch{display:flex;align-items:center;gap:10px;max-width:460px;margin-top:22px;padding:0 16px;border-radius:99px;border:1px solid var(--ln2);background:var(--sf);box-shadow:var(--s1);color:var(--mu)}.srch input{flex:1;border:0;background:none;padding:13px 0;outline:0;font-size:16px;color:var(--tx)}
+.hc{display:block;text-decoration:none;transition:transform .5s var(--e),box-shadow .5s var(--e)}.hc:active{transform:scale(.985)}@media(hover:hover){.hc:hover{transform:translateY(-4px);box-shadow:var(--s3)}}
+.hcb{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--mu);font-size:14px}
+.cv{position:relative;height:210px;display:grid;place-items:center;overflow:hidden;color:rgba(255,255,255,.3)}.cv .bgi{position:absolute;inset:0;background:radial-gradient(120% 100% at 15% 0,var(--c1),var(--c2)) center/cover;transition:transform .9s var(--e)}.hc:hover .bgi{transform:scale(1.05)}.cv::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65),transparent 65%)}.cv>svg{position:relative}
+.cv .t{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;color:#fff}.cv .t small{display:block;font-size:12.5px;opacity:.85;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cv .t b{font-size:21px;line-height:1.2;letter-spacing:-.02em}.cv .gb{position:absolute;top:14px;left:14px;z-index:2;background:rgba(255,255,255,.92);color:#1d1d1f;border:0}
+.hero2{margin-top:14px;border-radius:24px;overflow:hidden}.hero2 .cv{height:clamp(220px,42vw,360px)}
+.desc{white-space:pre-line;color:var(--mu)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.steps div{padding:18px 20px;display:grid;gap:4px;border-right:1px solid var(--ln)}.steps div:last-child{border:0}.steps i{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--fs);color:var(--a2);margin-bottom:6px}.steps span{color:var(--mu);font-size:13.5px}
+.cta{margin-top:18px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}.cta h3{margin:0}
+.map iframe{width:100%;height:220px;border:0;display:block}.mb{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--ln);font-size:13px;color:var(--mu)}
+.apb{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--gl);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border-top:1px solid var(--ln)}.apb .btn{max-width:520px;margin:0 auto;display:flex}
+body:not(.hasnav) .w:has(.apb){padding-bottom:110px}body.hasnav .apb{bottom:calc(env(safe-area-inset-bottom,0px) + 84px);padding:0 16px;background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none}body.hasnav .w:has(.apb){padding-bottom:210px}
+/* applicant */
+.tl{padding:22px 20px}.tn{display:flex;gap:14px;position:relative;padding-bottom:22px}.tn:last-child{padding-bottom:0}.tn::before{content:"";position:absolute;left:16px;top:36px;bottom:-4px;width:2px;background:var(--ln)}.tn:last-child::before{display:none}.tn.d::before{background:var(--ok)}
+.ti2{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--fs);border:1.5px solid var(--ln);color:var(--mu);z-index:1}.tn.d .ti2{background:var(--ok);border-color:var(--ok);color:#fff}.tn.c .ti2{background:var(--ag);border-color:var(--a2);color:var(--at);animation:rg 2s ease-in-out infinite}@keyframes rg{50%{box-shadow:0 0 0 7px rgba(176,141,87,.22)}}
+.tn h4{font-size:15.5px;padding-top:5px}.tn p{font-size:13.5px;color:var(--mu);margin-top:2px}.tn:not(.d):not(.c){opacity:.5}
+.big{padding:22px}.big small,.st small,.mini small,.stile small{display:block;font-size:11.5px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.04em}.big b{display:block;font-size:40px;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1.15;margin:2px 0 10px}
+.st{display:grid;grid-template-columns:1fr 1fr;gap:12px}.st .card{padding:16px}.st b{display:block;font-size:24px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.it{padding:16px;margin-bottom:12px}.it small{display:block;color:var(--mu);font-size:13px}.it .ac{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.it.lk{display:block;text-decoration:none}.dtl{color:var(--mu);font-size:14px;margin-top:6px;white-space:pre-line}
+.reply{display:flex;gap:8px;align-items:flex-start;margin-top:12px;padding:10px 12px;border-radius:14px;background:var(--fs);font-size:13.5px}.reply svg{margin-top:2px;color:var(--a2)}
+/* plan */
+.pw{position:relative;background:var(--sf2)}.vp{overflow:auto;padding:8px;max-height:70vh}.vp .plan{min-width:560px}
+.plan{width:100%;height:auto;display:block;touch-action:manipulation}
+.p-room{fill:var(--p-fill);stroke:var(--p-wall);stroke-width:2.5}.p-corr{fill:var(--p-corr);stroke:var(--p-line);stroke-dasharray:6 5}.p-bal{fill:none;stroke:var(--p-line);stroke-dasharray:3 5;stroke-width:2}
+.p-wc{fill:color-mix(in srgb,var(--ok) 9%,transparent);stroke:color-mix(in srgb,var(--ok) 55%,var(--p-wall));stroke-width:2}.p-door{stroke:var(--a2);stroke-width:4;fill:none}.p-swing{stroke:var(--a2);stroke-opacity:.55;stroke-dasharray:3 3;fill:none}
+.p-win{fill:rgba(94,170,230,.3);stroke:#5eaae6;stroke-width:2}.p-line{fill:none;stroke:var(--p-line);stroke-width:2}.p-thin{fill:none;stroke:var(--p-line);stroke-opacity:.55}.p-fan{fill:none;stroke:var(--a2);stroke-width:2}.p-light{fill:color-mix(in srgb,var(--hold) 30%,transparent);stroke:var(--hold)}
+.p-t{fill:var(--mu);font:600 12px system-ui,sans-serif}
+.bed{transform-box:fill-box;transform-origin:center;transition:transform .35s var(--sp)}.bed.a{--c:var(--ok)}.bed.h{--c:var(--hold)}.bed.r{--c:var(--res)}.bed.o{--c:var(--occ)}.bed.u{--c:var(--na)}
+.bed .bb{fill:color-mix(in srgb,var(--c) 13%,var(--sf));stroke:var(--c);stroke-width:2.2}.bed .bp2{fill:var(--c);opacity:.5}.bed text{fill:var(--tx);font:700 10px system-ui,sans-serif;text-anchor:middle}.bed.h .bb{stroke-dasharray:5 3}.bed.u{opacity:.6}
+.pk{cursor:pointer;outline:0}.pk:hover .bed,.pk:focus-visible .bed{transform:scale(1.08)}.pk:focus-visible .bb{stroke-width:3.5}.pk.sel .bed{animation:pu .5s var(--sp)}.pk.sel .bb{stroke:var(--a2);stroke-width:3.5;fill:color-mix(in srgb,var(--a2) 22%,var(--sf))}@keyframes pu{50%{transform:scale(1.18)}}
+.lgd{padding:12px 16px;border-top:1px solid var(--ln);display:flex;justify-content:center;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--mu)}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}.dot.a{background:var(--ok)}.dot.h{background:var(--hold)}.dot.r{background:var(--res)}.dot.o{background:var(--occ)}.dot.u{background:var(--na)}
+.pvs{padding:12px 14px 4px;display:flex;justify-content:center}
+.bar{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);translate:-50% 0;z-index:44;width:max-content;max-width:calc(100vw - 20px);display:flex;align-items:center;gap:14px;padding:8px 8px 8px 20px;background:var(--gl);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--ln2);border-radius:99px;box-shadow:var(--s4);transform:translateY(240%);transition:transform .6s var(--sh)}.bar.on{transform:none}.bar small{display:block;font-size:12px;color:var(--mu)}body.hasnav .bar{bottom:calc(env(safe-area-inset-bottom,0px) + 88px)}
+/* sheet */
+.ov{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;visibility:hidden;transition:opacity .35s var(--e),visibility .35s}.ov.on{opacity:1;visibility:visible}
+.sheet{width:100%;max-width:600px;max-height:94vh;background:var(--sf);border-radius:28px 28px 0 0;box-shadow:var(--s4);display:flex;flex-direction:column;overflow:hidden;transform:translateY(100%);transition:transform .55s var(--sh);padding-bottom:env(safe-area-inset-bottom,0px)}.ov.on .sheet{transform:none}
+@media(min-width:768px){.ov{align-items:center;padding:20px}.sheet{border-radius:28px;transform:scale(.94) translateY(24px);opacity:0;transition:transform .5s var(--sp),opacity .3s}.ov.on .sheet{transform:none;opacity:1}}
+.gh{padding:10px 0 4px;display:flex;justify-content:center;cursor:grab;touch-action:none}.gh s{width:38px;height:5px;border-radius:9px;background:var(--ti);opacity:.4}
+.sh1{padding:8px 20px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--ln)}.sh1 h3{font-size:19px}.sh1 p{font-size:13px;color:var(--mu)}.sb{padding:20px;overflow-y:auto;overscroll-behavior:contain}
+.pt{display:flex;justify-content:space-between;position:relative;margin-bottom:18px}.pt::before{content:"";position:absolute;top:50%;left:12px;right:12px;height:2px;background:var(--ln);translate:0 -50%}.pn{position:relative;width:28px;height:28px;border-radius:50%;background:var(--sf);border:2px solid var(--ln2);display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--mu);transition:.35s var(--e)}.pn.on{border-color:var(--a2);background:var(--ag);color:var(--at);transform:scale(1.15)}.pn.dn{border-color:var(--ok);background:var(--ok);color:#fff}
+.sth{font-size:16px;margin-bottom:14px}
+/* forms */
+.fl{position:relative;margin-bottom:14px}.fl input,.fl textarea,.fi{width:100%;border:1px solid var(--ln2);border-radius:14px;background:var(--fs);color:var(--tx);font-size:16px;padding:22px 16px 8px;outline:0;transition:.25s var(--e)}.fl textarea{min-height:96px;resize:vertical;padding-top:26px}
+.fi{padding:13px 16px;margin-bottom:14px;display:block}textarea.fi{min-height:96px;resize:vertical}.fi.sm{padding:9px 12px;font-size:14px;border-radius:12px;margin-bottom:10px}
+select.fi{appearance:none;-webkit-appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2386868b' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.fl input:focus,.fl textarea:focus,.fi:focus{background:var(--sf);border-color:var(--a2);box-shadow:0 0 0 3.5px rgba(176,141,87,.22)}
+.fl label{position:absolute;left:17px;top:15px;color:var(--mu);pointer-events:none;transition:.3s var(--e);transform-origin:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 30px)}.fl :focus+label,.fl :not(:placeholder-shown)+label{transform:translateY(-9px) scale(.78)}
+.fl.er input,.fl.er textarea,.fi.er{border-color:var(--occ);animation:shk .4s}@keyframes shk{25%{translate:-6px}75%{translate:6px}}
+.lb{display:block;font-size:13px;font-weight:550;color:var(--mu);margin-bottom:6px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.ck{display:flex;gap:10px;font-size:14px;color:var(--mu);margin-bottom:12px;cursor:pointer;align-items:flex-start}.ck input{accent-color:#b08d57;width:20px;height:20px;flex:none}
+.rv2{background:var(--fs);border:1px solid var(--ln);border-radius:14px;padding:12px 14px;font-size:14px;margin-bottom:16px}.rv2 div{display:flex;justify-content:space-between;gap:12px;padding:5px 0}.rv2 span{color:var(--mu);flex:none}.rv2 b{text-align:right;word-break:break-word;font-weight:600}
+.terms{margin-bottom:14px;border:1px solid var(--ln);border-radius:14px;padding:12px 14px;font-size:13.5px;color:var(--mu)}.terms summary{cursor:pointer;font-weight:600;color:var(--tx)}.terms ol{padding-left:20px;margin-top:10px;display:grid;gap:6px}
+.ft2{display:flex;justify-content:space-between;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--ln)}
+.otp{font-size:28px;letter-spacing:.45em;text-align:center;font-variant-numeric:tabular-nums;padding:14px}
+.ok2{text-align:center;padding:8px 0}.ok2 svg{width:84px;height:84px}.ok2 circle{fill:none;stroke:var(--ok);stroke-width:3;stroke-dasharray:176;stroke-dashoffset:176;animation:dr .7s var(--e) forwards}.ok2 path{fill:none;stroke:var(--ok);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:50;stroke-dashoffset:50;animation:dr .5s .5s var(--e) forwards}@keyframes dr{to{stroke-dashoffset:0}}.ok2 h3{font-size:24px;margin:8px 0 4px}
+/* admin */
+.login{max-width:420px;margin:40px auto;text-align:center}.login h2{font-size:26px;margin:4px 0}.login .bg{width:56px;height:56px;border-radius:50%;margin:0 auto 10px;background:var(--fs);border:1px solid var(--ln);display:grid;place-items:center}.login .mu{margin-bottom:18px}.login .ck{justify-content:flex-start}
+.atop{position:sticky;top:var(--hh);z-index:30;display:flex;gap:8px;align-items:center;padding:8px 0 10px;margin:-8px 0 4px;background:var(--bg)}
+.atabs{display:flex;gap:2px;overflow-x:auto;padding:3px;flex:1;background:var(--fs);border:1px solid var(--ln);border-radius:99px;scrollbar-width:none}.atabs::-webkit-scrollbar{display:none}
+.atabs a{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;text-decoration:none;font-weight:550;font-size:13.5px;color:var(--mu);white-space:nowrap;transition:.25s var(--e)}.atabs a.on{background:var(--th);color:var(--tx);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.bdg{min-width:20px;height:20px;padding:0 6px;border-radius:99px;background:var(--occ);color:#fff;font-size:11px;font-weight:700;display:inline-grid;place-items:center}
+.stg{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}.stile{padding:16px 18px;text-decoration:none;transition:transform .4s var(--e),box-shadow .4s var(--e)}.stile b{display:block;font-size:30px;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin-top:2px}@media(hover:hover){.stile:hover{transform:translateY(-2px);box-shadow:var(--s2)}}
+.meter{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--fs);margin-top:12px}.meter i{display:block;height:100%}.occ{margin-top:12px}
+.who{display:flex;gap:12px;align-items:center;min-width:0}.who>div{min-width:0}.av{flex:none;width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--fs);border:1px solid var(--ln);display:grid;place-items:center;font-weight:650;color:var(--mu)}
+.mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--fs)}.mini b{font-size:14.5px;font-variant-numeric:tabular-nums}
+.tkf{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tkf .fi{margin:0;width:auto}.tkf input.fi{flex:1;min-width:180px}
+/* plan editor */
+.etool{position:sticky;top:calc(var(--hh) + 62px);z-index:6;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:6px;margin-bottom:14px;background:var(--gl);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--ln);border-radius:99px}
+.ed{display:grid;grid-template-columns:150px minmax(0,1fr) 270px;gap:14px;align-items:start}.pal{display:flex;flex-direction:column;gap:6px}.pal .btn{justify-content:flex-start}
+.ecv{padding:8px}.plan.edit{cursor:grab;touch-action:none;aspect-ratio:1000/640;border-radius:14px}.e-g1{fill:none;stroke:var(--p-grid)}.e-g5{fill:none;stroke:var(--p-grid2)}.e-sel{fill:rgba(176,141,87,.12);stroke:var(--a2);stroke-width:2;stroke-dasharray:5 4}.e-rs{fill:var(--a2);cursor:nwse-resize}
+.efoot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 6px 2px;font-size:12px;color:var(--mu);min-height:30px}
+.panel h3{font-size:17px;margin-bottom:12px}.keys{display:grid;gap:6px;margin-top:12px;font-size:13px;color:var(--mu)}.keys div{display:flex;gap:10px;align-items:center}kbd{font:600 11.5px ui-monospace,Menlo,monospace;padding:2px 7px;border-radius:7px;border:1px solid var(--ln2);background:var(--fs);color:var(--tx);min-width:56px;text-align:center}
+.fillbox{margin-top:6px;padding:12px;border-radius:14px;background:var(--fs)}.fillbox b{display:block;margin-bottom:8px;font-size:14px}.mono{font:13px/1.55 ui-monospace,Menlo,Consolas,monospace!important;min-height:260px!important}
+/* toast */
+.ts{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;z-index:200;display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:14px;font-weight:600;background:var(--gl);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid var(--ln2);border-radius:99px;box-shadow:var(--s4);transform:translate(-50%,-140px);opacity:0;transition:.5s var(--sh);pointer-events:none;width:max-content;max-width:calc(100vw - 20px)}.ts.on{transform:translate(-50%,0);opacity:1}.ts svg{color:var(--a2);flex:none}.ts.bad svg{color:var(--occ)}
+@media(max-width:900px){.ed{grid-template-columns:1fr}.pal{flex-direction:row;overflow-x:auto;scrollbar-width:none}.pal .btn{flex:none}.steps div{border-right:0;border-bottom:1px solid var(--ln)}}
+@media(max-width:560px){.g2{grid-template-columns:1fr}.nav a{min-width:62px;padding:8px 6px}.sheet{max-height:96vh}.cv{height:190px}.hm{display:none}.mini{grid-template-columns:1fr 1fr}.tbar .fi{flex:1;min-width:0}}
+@media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style></head><body>
-<header class="nav"><div class="wrap"><a class="logo" href="#/"><i id="lg"></i>N.N Reddy Hostels</a><nav><a href="#/"><span>Hostels</span></a><a href="#/track" id="tk"></a><a href="#/admin" id="ad"></a></nav></div></header>
-<main id="app"></main><div id="modal"></div><div id="toast"></div>
-<footer><div class="wrap">N.N Reddy Hostels. Every space mapped, every bed accounted for. Powered by HostelAtlas.</div></footer>
+<a class="skip" href="#app">Skip to content</a>
+<header class="hd" id="hd"><a class="br" href="#/" aria-label="N.N Reddy Hostels, home"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgx" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0dcb6"/><stop offset="1" stop-color="#a98450"/></linearGradient></defs><rect width="32" height="32" rx="9" fill="url(#lgx)"/><path d="M10 23V9l9 14V9" fill="none" stroke="#1a1409" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23.5" cy="9" r="2" fill="#1a1409"/></svg><span>N.N Reddy Hostels</span></a><div class="ha" id="ha"></div></header>
+<main class="w" id="app" tabindex="-1"></main>
+<footer class="ft">N.N Reddy Hostels · Every space mapped, every bed accounted for.</footer>
+<nav class="nav" id="nav" hidden aria-label="Your account"></nav>
+<div class="bar" id="bar"><div><small id="bs2">Selected bed</small><b id="bn"></b></div><button class="btn bp" data-act="pickBed">Reserve bed</button></div>
+<div class="ov" id="ov"><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="stt"><div class="gh" id="gh"><s></s></div><div class="sh1"><div><h3 id="stt"></h3><p id="sth"></p></div><button class="ib" data-act="close" aria-label="Close" id="xb"></button></div><div class="sb" id="sb"></div></div></div>
+<div class="ts" id="ts" role="status" aria-live="polite"></div>
 <script>
-const IC={building:'<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2M10 6h4M10 10h4M10 14h4M10 18h4"/>',
-bed:'<path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M12 4v6M2 18h20"/>',
-pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
-plus:'<path d="M5 12h14M12 5v14"/>',trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
-x:'<path d="M18 6 6 18M6 6l12 12"/>',check:'<path d="M20 6 9 17l-5-5"/>',
-user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
-phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
-ext:'<path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
-out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
-lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
-grid:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>',
-cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/>',
-door:'<path d="M13 4h3a2 2 0 0 1 2 2v14M2 20h3M13 20h9M10 12v.01M13 4.6v16.1a1 1 0 0 1-1.2 1L5 20V5.6a2 2 0 0 1 1.5-1.9l4-1A2 2 0 0 1 13 4.6Z"/>',
-win:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/>',stairs:'<path d="M4 20h4v-4h4v-4h4V8h4"/>',
-lift:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="m9 10 3-3 3 3M9 14l3 3 3-3"/>',
-wind:'<path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2M9.6 4.6A2 2 0 1 1 11 8H2M12.6 19.4A2 2 0 1 0 14 16H2"/>',
-bulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/>',
-rack:'<rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/>',
-drop:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
-room:'<rect x="3" y="3" width="18" height="18" rx="2"/>',corr:'<path d="M3 9h18M3 15h18"/>',
-save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8"/>',
-edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',wallet:'<path d="M20 12V8H6a2 2 0 0 1 0-4h12v4M4 6v12a2 2 0 0 0 2 2h14v-4M18 12a2 2 0 0 0 0 4h4v-4z"/>',
-wrench:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
-users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/><circle cx="9" cy="7" r="4"/>',
-clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'};
-const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const I=(n,s=18)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
-$('#lg').innerHTML=I('building',20);$('#tk').innerHTML=I('search')+'<span>Track booking</span>';$('#ad').innerHTML=I('lock')+'<span>Admin</span>';
-let tok=sessionStorage.getItem('t'),CUR=null,ED=null,AD={tab:'overview'};const A={};
-const view=h=>{$('#app').innerHTML=h;scrollTo(0,0)},uid=()=>'o'+Math.random().toString(36).slice(2,9),go=h=>location.hash=h;
-function toast(m,bad){const t=$('#toast');t.textContent=m;t.className='show'+(bad?' bad':'');clearTimeout(t._);t._=setTimeout(()=>t.className='',3200)}
-async function api(a,d={}){const r=await fetch('/api/index',{method:'POST',headers:{'Content-Type':'application/json',...(tok?{Authorization:'Bearer '+tok}:{})},body:JSON.stringify({a,...d})});const j=await r.json().catch(()=>({error:'Network error'}));
- if(!r.ok){if(r.status===401&&a!=='login'){tok=null;sessionStorage.removeItem('t');go('#/admin')}throw new Error(j.error||'Request failed')}return j}
-const modal=h=>$('#modal').innerHTML=`<div class="ov" data-ov><div class="mod" role="dialog" aria-modal="true">${h}</div></div>`;
-const mh=t=>`<div class="mh"><h3>${t}</h3><button class="btn sm o" data-act="close" aria-label="Close">${I('x',16)}</button></div>`;
-document.addEventListener('click',async e=>{if(e.target.dataset.ov!==undefined)return A.close();const t=e.target.closest('[data-act]');if(!t||!A[t.dataset.act])return;
- try{await A[t.dataset.act](t.dataset,t)}catch(x){toast(x.message,1);t.disabled=false}});
-document.addEventListener('keydown',e=>{const t=e.target.closest?.('[data-act][tabindex]');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();t.dispatchEvent(new MouseEvent('click',{bubbles:true}))}
- if(e.key==='Escape')A.close();if(e.key==='Delete'&&ED?.sel&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))A.delObj()});
-A.close=()=>$('#modal').innerHTML='';
-const LBL={available:'Available',hold:'On hold',reserved:'Reserved',occupied:'Occupied',unavailable:'Unavailable'},COL={available:'#52c9a3',hold:'#e6a94a',reserved:'#8091ff',occupied:'#e8627c',unavailable:'#4c5753'};
-const legend=()=>`<div class="leg">${Object.keys(LBL).map(k=>`<span><i style="background:${COL[k]}"></i>${LBL[k]}</span>`).join('')}</div>`;
-const mapSrc=h=>`https://maps.google.com/maps?q=${h.lat!=null?h.lat+','+h.lng:encodeURIComponent([h.name,h.address,h.city].filter(Boolean).join(', '))}&z=16&output=embed`;
-const safe=u=>/^https?:\/\//i.test(u||'')?u:'',openUrl=h=>safe(h.maps_url)||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([h.name,h.address,h.city].filter(Boolean).join(', '))}`;
-const payNote=p=>`<div class="note w">${I('wallet')}<div>Online payments are under development. Please pay the rent and deposit directly to the hostel owner${p?` (<a href="tel:${esc(p)}">${esc(p)}</a>)`:''}. Your bed is confirmed only after staff verify your documents and payment.</div></div>`;
-const bg=u=>safe(u)?`style="background-image:url('${esc(u).replace(/'/g,'%27')}')"`:'';
-/* ---------- floor plan ---------- */
-const PAL=[['room','Room','room'],['corridor','Corridor','corr'],['bed','Bed','bed'],['washroom','Washroom','drop'],['door','Door','door'],['window','Window','win'],['stairs','Stairs','stairs'],['lift','Lift','lift'],['fan','Fan','wind'],['light','Light','bulb'],['rack','Rack','rack'],['balcony','Balcony','grid']];
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const IC={home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',sun:'<circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',moon:'<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',
+pin:'<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',check:'<path d="m20 6-11 11-5-5"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',wal:'<path d="M20 12V8H6a2 2 0 0 1 0-4h12v4M4 6v12a2 2 0 0 0 2 2h14v-4M18 12a2 2 0 0 0 0 4h4v-4z"/>',wr:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',bed:'<path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M2 17h20"/>',ext:'<path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+bld:'<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18zM10 6h4M10 10h4M10 14h4M10 18h4"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/>',id:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M15 9h3M15 13h3M7 17h10"/>',out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8"/>',
+refresh:'<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M3 21v-5h5"/>',room:'<rect x="3" y="3" width="18" height="18" rx="2"/>',corr:'<path d="M3 9h18M3 15h18"/>',drop:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+door:'<path d="M13 4h3a2 2 0 0 1 2 2v14M2 20h3M13 20h9M10 12v.01M13 4.6v16.1a1 1 0 0 1-1.2 1L5 20V5.6a2 2 0 0 1 1.5-1.9l4-1A2 2 0 0 1 13 4.6Z"/>',win:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/>',stairs:'<path d="M4 20h4v-4h4v-4h4V8h4"/>',lift:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="m9 10 3-3 3 3M9 14l3 3 3-3"/>',
+fan:'<path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2M9.6 4.6A2 2 0 1 1 11 8H2M12.6 19.4A2 2 0 1 0 14 16H2"/>',bulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/>',rack:'<rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/>',grid:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>',
+undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',redo:'<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',zin:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/>',zout:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M8 11h6"/>',fit:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',code:'<path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>'};
+const I=(n,s=18)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||''}</svg>`;
+const money=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+const day=s=>s?new Date(String(s).length===10?s+'T00:00':s).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'-';
+const dt=s=>s?new Date(s).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'-';
+const local=s=>s?new Date(new Date(s)-new Date(s).getTimezoneOffset()*6e4).toISOString().slice(0,16):'',today=()=>local(new Date().toISOString()).slice(0,10);
+const safe=u=>/^https?:\/\//i.test(u||'')?u:'';
+const bgi=u=>safe(u)?` style="background-image:url('${esc(u.replace(/['"\\()\s]/g,c=>'%'+c.charCodeAt(0).toString(16).padStart(2,'0')))}')"`:'';
+const ss=(k,v)=>{try{if(v===undefined)return sessionStorage.getItem(k);v===null?sessionStorage.removeItem(k):sessionStorage.setItem(k,v)}catch(e){return null}};
+const S={tok:ss('t'),ut:ss('ut'),ue:ss('ue'),mode:'user',rt:0,hs:null,h:null,me:null,app:null,pl:null,sel:null,AD:null,cf:null,si:''};
+const STALE=new Error('stale'),A={};
+const E_RE=/^[^@\s]+@[^@\s]+\.[^@\s]+$/,P_RE=/^\+?\d[\d\s-]{8,14}$/;
+const TERMS=['Advance is not refundable or transferable under any circumstances.','Management is not responsible for theft or loss of belongings such as cell phones, gold ornaments, cash and dress material.','Guests are not allowed into the hostel at any time.','Inform the manager 15 days in advance before leaving the hostel.','Laptop charges are ₹200 per month.','Computers, water heaters, iron boxes and unused electrical items are not allowed. Breaking this rule carries a fine of ₹1,000.','Hostel timings: 6:00 am to 9:30 pm.'];
+
+/* ---------- api: the applicant token on public pages, the admin token in the admin portal ---------- */
+async function api(a,d={}){const t=S.mode==='admin'?S.tok:S.ut;let r;
+ try{r=await fetch('/api/index',{method:'POST',headers:{'Content-Type':'application/json',...(t?{Authorization:'Bearer '+t}:{})},body:JSON.stringify({a,...d})})}
+ catch(e){throw new Error('You appear to be offline. Check your connection and try again.')}
+ const j=await r.json().catch(()=>({error:`The server had a problem (${r.status}). Please try again.`}));
+ if(!r.ok){if(r.status===401&&t&&!/^(login|otp_)/.test(a))S.mode==='admin'?adminOut(1):userOut(1);throw new Error(j.error||'Request failed')}return j}
+const get=async(a,d)=>{const rt=S.rt,r=await api(a,d);if(rt!==S.rt)throw STALE;return r};
+const soft=p=>p.catch(e=>{if(e===STALE)throw e;return[]});
+
+/* ---------- chrome ---------- */
+let tt;function toast(m,bad){const t=$('#ts');t.innerHTML=I(bad?'info':'check')+'<span>'+esc(m)+'</span>';t.className='ts on'+(bad?' bad':'');clearTimeout(tt);tt=setTimeout(()=>t.className='ts'+(bad?' bad':''),bad?4500:2600)}
+function view(h){const m=$('#app');m.innerHTML=h;m.classList.remove('pg');void m.offsetWidth;m.classList.add('pg');syncAll()}
+function sync(s){const b=s.querySelector('.on'),t=s.querySelector('.th');if(!b||!t||!b.offsetWidth)return;t.style.width=b.offsetWidth+'px';t.style.transform=`translateX(${b.offsetLeft}px)`}
+const syncAll=()=>$$('.seg').forEach(sync);
+const segH=(act,items,on)=>`<div class="seg" role="tablist"><s class="th"></s>${items.map(x=>`<button role="tab" aria-selected="${x[0]==on}" data-act="${act}" data-v="${esc(x[0])}" class="${x[0]==on?'on':''}">${x[1]}</button>`).join('')}</div>`;
+const chip=(c,t)=>`<span class="chip" style="--c:var(${c})"><i></i>${esc(t)}</span>`;
+const SCH={pending:['--hold','Under review'],approved:['--ok','Approved'],assigned:['--res','Bed reserved'],paid:['--hold','Payment submitted'],verified:['--ok','Payment verified'],resident:['--ok','Resident'],rejected:['--occ','Not approved'],left:['--na','Checked out']};
+const stc=s=>chip(...(SCH[s]||['--na',s]));
+const lockC=(t,p,x='',ic='lock')=>`<div class="card lockc"><div class="bg">${I(ic,24)}</div><h3>${esc(t)}</h3><p>${esc(p)}</p>${x}</div>`;
+const skel=(n=3)=>`<div class="ph"><div class="sk" style="height:38px;width:55%"></div><div class="sk" style="height:16px;width:35%;margin-top:12px"></div></div>${'<div class="sk" style="height:120px;margin-bottom:12px"></div>'.repeat(n)}`;
+function head(){const ad=S.mode==='admin',dk=document.documentElement.dataset.theme==='dark';
+ $('#ha').innerHTML=(ad?(S.tok?`<button class="btn bs bm" data-act="adminOut">${I('out',16)}<span class="hm">Exit admin</span></button>`:`<a class="btn bs bm" href="#/">${I('back',16)}<span class="hm">Website</span></a>`)
+  :S.ut?`<a class="btn bs bm" href="#/me">${I('user',16)}<span class="hm">My stay</span></a>`:`<button class="btn bs bm" data-act="signin">Sign in</button><a class="ib" href="#/admin" aria-label="Staff sign in" title="Staff sign in">${I('lock')}</a>`)
+  +`<button class="ib" data-act="theme" aria-label="Switch to ${dk?'light':'dark'} mode">${I(dk?'sun':'moon')}</button>`;
+ document.querySelector('meta[name=theme-color]').content=dk?'#0b0f0e':'#f5f5f7'}
+function navbar(p){const n=$('#nav'),on=S.mode==='user'&&!!S.ut;n.hidden=!on;document.body.classList.toggle('hasnav',on);if(!on)return;
+ const cur=p[0]==='me'?(p[1]||'stay'):!p[0]||p[0]==='h'?'home':'';
+ n.innerHTML=[['home','#/','Hostels','home'],['stay','#/me','My stay','user'],['fees','#/me/fees','Fees','wal'],['requests','#/me/requests','Requests','wr']].map(x=>`<a href="${x[1]}" class="${cur===x[0]?'on':''}"${cur===x[0]?' aria-current="page"':''}>${I(x[3],22)}<span>${x[2]}</span></a>`).join('')}
+A.theme=()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;try{localStorage.setItem('nnr-theme',t)}catch(e){}head()};
+addEventListener('scroll',()=>$('#hd').classList.toggle('sc',scrollY>6),{passive:true});addEventListener('resize',syncAll);
+
+/* ---------- sheet (bottom sheet on phones, dialog on desktop) ---------- */
+let lastFocus=null;
+function sheet(t,s,h){const o=$('#ov');if(!o.classList.contains('on'))lastFocus=document.activeElement;$('#stt').textContent=t;$('#sth').textContent=s||'';$('#sb').innerHTML=h;$('#sb').scrollTop=0;$('#xb').innerHTML=I('x');
+ o.classList.add('on');$('#sheet').style.transform='';document.body.classList.add('lock');syncAll();
+ setTimeout(()=>{if(!o.classList.contains('on'))return;const f=$('#sb input:not([type=checkbox]),#sb select,#sb textarea');(f||$('#xb')).focus({preventScroll:true})},400)}
+function closeSheet(){if(S.cf){const r=S.cf;S.cf=null;r(false)}const o=$('#ov');if(!o.classList.contains('on'))return;o.classList.remove('on');document.body.classList.remove('lock');lastFocus?.focus?.({preventScroll:true})}
+A.close=closeSheet;
+$('#ov').addEventListener('click',e=>{if(e.target.id==='ov')closeSheet()});
+(()=>{const g=$('#gh'),s=$('#sheet');let y=null;g.onpointerdown=e=>{y=e.clientY;g.setPointerCapture(e.pointerId);s.style.transition='none'};g.onpointermove=e=>{if(y!==null)s.style.transform=`translateY(${Math.max(0,e.clientY-y)}px)`};
+ g.onpointerup=g.onpointercancel=e=>{if(y===null)return;const d=e.clientY-y;y=null;s.style.transition='';d>100?closeSheet():s.style.transform=''}})();
+function confirmUI(t,p,ok='Confirm',danger){if($('#ov').classList.contains('on'))return Promise.resolve(confirm(t+'\n\n'+p));
+ return new Promise(res=>{sheet(t,'',`<p class="mu">${esc(p)}</p><div class="ft2"><button class="btn bs" data-act="close">Cancel</button><button class="btn ${danger?'bd2':'bp'}" data-act="cfYes">${esc(ok)}</button></div>`);S.cf=res})}
+A.cfYes=()=>{const r=S.cf;S.cf=null;closeSheet();r?.(true)};
+
+/* ---------- forms ---------- */
+const FL=(id,l,t='text',v='',x='')=>`<div class="fl" id="w_${id}"><input id="${id}" data-f="${id}" type="${t}" placeholder=" " value="${esc(v)}" ${x}><label for="${id}">${esc(l)}</label></div>`;
+const TA=(id,l,v='')=>`<div class="fl" id="w_${id}"><textarea id="${id}" data-f="${id}" placeholder=" ">${esc(v)}</textarea><label for="${id}">${esc(l)}</label></div>`;
+const SEL=(id,l,opts,v)=>`<label class="lb" for="${id}">${esc(l)}</label><select class="fi" id="${id}" data-f="${id}">${opts.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('')}</select>`;
+const val=id=>($('#'+id)?.value||'').trim();
+const bad=id=>{const w=$('#w_'+id)||$('#'+id);if(!w)return;w.classList.remove('er');void w.offsetWidth;w.classList.add('er');(w.matches('input,textarea,select')?w:w.querySelector('input,textarea'))?.focus()};
+const fail=(id,m)=>{bad(id);throw new Error(m)};
+
+/* ---------- events: data-act on click, data-chg on change ---------- */
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-act]');if(!t||!A[t.dataset.act])return;
+ const sg=t.closest('.seg');if(sg){sg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===t));sync(sg)}
+ const b=t.tagName==='BUTTON'?t:null;if(b){if(b.dataset.busy)return;b.dataset.busy=1;b.disabled=true}
+ try{await A[t.dataset.act](t.dataset,t,e)}catch(x){if(x!==STALE)toast(x.message,1)}finally{if(b){delete b.dataset.busy;b.disabled=false}}});
+document.addEventListener('change',e=>{const t=e.target.closest('[data-chg]');if(t&&A[t.dataset.chg])Promise.resolve(A[t.dataset.chg](t.dataset,t)).catch(x=>x!==STALE&&toast(x.message,1))});
+document.addEventListener('input',e=>e.target.closest?.('.er')?.classList.remove('er'));
+addEventListener('keydown',e=>{const ov=$('#ov').classList.contains('on');
+ if(e.key==='Escape'&&ov){closeSheet();return}
+ if(ov&&e.key==='Tab'){const f=$$('#sheet button:not([disabled]),#sheet input,#sheet select,#sheet textarea,#sheet a[href],#sheet summary'),a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}return}
+ if(e.key==='Enter'&&e.target.matches?.('input:not([type=checkbox])')){const k=e.target.dataset.enter;const btn=k?$(`[data-act="${k}"]`):ov?$('#sb .bp:not([disabled])'):null;if(btn){e.preventDefault();btn.click();return}}
+ const t=e.target.closest?.('[data-act][tabindex]');if(t&&t.tagName!=='BUTTON'&&(e.key==='Enter'||e.key===' ')){e.preventDefault();t.dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
+
+/* ---------- floor plan drawing (shared by the applicant view and the admin editor) ---------- */
+const PAL=[['room','Room','room'],['corridor','Corridor','corr'],['bed','Bed','bed'],['washroom','Washroom','drop'],['door','Door','door'],['window','Window','win'],['stairs','Stairs','stairs'],['lift','Lift','lift'],['fan','Fan','fan'],['light','Light','bulb'],['rack','Rack','rack'],['balcony','Balcony','grid']];
 const DEF={room:[240,160,'Room'],corridor:[400,60,'Corridor'],bed:[36,80,''],washroom:[100,90,'WC'],door:[40,40,'Door'],window:[60,8,'Window'],stairs:[80,100,'Stairs'],lift:[60,60,'Lift'],fan:[36,36,'Fan'],light:[20,20,'Light'],rack:[60,24,'Rack'],balcony:[200,60,'Balcony']};
-function shape(o,st){const{t,w,h}=o,l=esc(o.l),T=(x,y,s)=>`<text x="${x}" y="${y}" class="rl" ${s||''}>${l}</text>`;
- switch(t){case'room':return`<rect width="${w}" height="${h}" rx="4" fill="rgba(239,233,220,.025)" stroke="#5c6e67" stroke-width="2.5"/>${T(10,20)}`;
- case'corridor':return`<rect width="${w}" height="${h}" rx="4" fill="rgba(239,233,220,.04)" stroke="#3b4a45" stroke-dasharray="6 5"/>${T(10,h/2+4)}`;
- case'balcony':return`<rect width="${w}" height="${h}" rx="4" fill="none" stroke="#7d8f87" stroke-dasharray="3 5" stroke-width="2"/>${T(10,20)}`;
- case'washroom':return`<rect width="${w}" height="${h}" rx="4" fill="rgba(82,201,163,.07)" stroke="#3f8f78" stroke-width="2"/>${T(w/2,h/2+4,'text-anchor="middle"')}`;
- case'bed':{const c=COL[st],ph=Math.min(14,h*.22);return`<rect width="${w}" height="${h}" rx="6" fill="${c}" fill-opacity=".2" stroke="${c}" stroke-width="2"${st==='hold'?' stroke-dasharray="5 3"':''}/><rect x="4" y="4" width="${w-8}" height="${ph}" rx="4" fill="${c}" fill-opacity=".65"/><text x="${w/2}" y="${h/2+ph/2+4}" class="bl">${esc(o.code)}</text>`}
- case'door':return`<path d="M0 0H${w}" stroke="#d8b98a" stroke-width="4"/><path d="M${w} 0A${w} ${w} 0 0 1 0 ${w}" fill="none" stroke="#d8b98a" stroke-opacity=".5" stroke-dasharray="3 3"/>`;
- case'window':return`<rect width="${w}" height="${h}" fill="#7fb3d5" fill-opacity=".35" stroke="#7fb3d5" stroke-width="2"/>`;
- case'stairs':return`<rect width="${w}" height="${h}" fill="none" stroke="#8f9d97" stroke-width="2"/>${Array.from({length:Math.floor(h/10)},(_,i)=>`<path d="M0 ${i*10+10}H${w}" stroke="#8f9d97" stroke-opacity=".6"/>`).join('')}${T(w/2,h/2+4,'text-anchor="middle"')}`;
- case'lift':return`<rect width="${w}" height="${h}" fill="none" stroke="#8f9d97" stroke-width="2"/><path d="M0 0 ${w} ${h}M${w} 0 0 ${h}" stroke="#8f9d97" stroke-opacity=".5"/>`;
- case'fan':{const r=Math.min(w,h)/2;return`<g transform="translate(${w/2} ${h/2})" stroke="#d8b98a" stroke-width="2" fill="none"><circle r="${r}" stroke-opacity=".4"/><path d="M0 0 ${r*.9} 0M0 0-${r*.9} 0M0 0 0 ${r*.9}M0 0 0-${r*.9}"/></g>`}
- case'light':return`<circle cx="${w/2}" cy="${h/2}" r="${Math.min(w,h)/2-1}" fill="#f0dcb6" fill-opacity=".35" stroke="#f0dcb6"/>`;
- case'rack':return`<rect width="${w}" height="${h}" fill="none" stroke="#8f9d97" stroke-width="2"/><path d="M0 0 ${w} ${h}M${w} 0 0 ${h}" stroke="#8f9d97" stroke-opacity=".35"/>`;
- default:return`<rect width="${w}" height="${h}" fill="none" stroke="#8f9d97"/>`}}
-function plan(L,o={}){const bm=o.bm||{};
- const g=(L.objs||[]).map(ob=>{const bd=ob.t==='bed',st=bd?(o.edit?'available':(bm[ob.code]?.live||'unavailable')):'';
-  const act=!o.edit&&bd&&st==='available'?` data-act="bed" data-id="${bm[ob.code].id}" tabindex="0" role="button" aria-label="Book bed ${esc(ob.code)}" class="pick"`:'';
-  const sel=o.edit&&o.sel===ob.id;
-  return`<g data-o="${ob.id}"${act} transform="translate(${ob.x} ${ob.y}) rotate(${ob.r||0} ${ob.w/2} ${ob.h/2})">${bd&&!o.edit?`<title>${esc(ob.code)}: ${LBL[st]}</title>`:''}${shape(ob,st)}${sel?`<rect width="${ob.w}" height="${ob.h}" fill="none" stroke="#d8b98a" stroke-width="2" stroke-dasharray="5 4"/><rect data-rs="1" x="${ob.w-6}" y="${ob.h-6}" width="12" height="12" rx="3" fill="#d8b98a"/>`:''}</g>`}).join('');
- return`<svg viewBox="0 0 1000 640" class="plan" role="img" aria-label="Floor plan"><defs><pattern id="gr" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#fff" stroke-opacity=".045"/></pattern></defs><rect width="1000" height="640" fill="url(#gr)"/>${g}</svg>`}
-/* ---------- public ---------- */
-async function home(){view('<div class="wrap"><div class="empty">Loading hostels...</div></div>');const hs=await api('hostels');CUR={hs};drawHome()}
-function drawHome(q=''){const hs=CUR.hs.filter(h=>(h.name+' '+(h.city||'')+' '+(h.address||'')).toLowerCase().includes(q.toLowerCase()));
- view(`<div class="wrap"><section class="hero"><h1>Find your bed. See exactly where it is.</h1><p>Browse our hostels, explore the floor plan room by room, and request the exact bed you want.</p><div class="srch"><input id="q" placeholder="Search by hostel or area" aria-label="Search hostels" value="${esc(q)}"></div></section>
- <div class="grid">${hs.map(h=>`<a class="card hc" href="#/h/${h.id}"><div class="img" ${bg(h.image_url)}>${safe(h.image_url)?'':I('building',54)}</div><div class="b"><h3>${esc(h.name)}</h3><div class="meta">${I('pin',15)}${esc(h.city||h.address||'Location coming soon')}</div>
- <div class="row"><span class="chip ${h.free?'ok':'b'}">${I('bed',14)}${h.free} bed${h.free===1?'':'s'} available</span><span style="color:var(--sand)">${h.from?'From Rs '+h.from.toLocaleString('en-IN')+'/mo':''}</span></div></div></a>`).join('')||`<div class="card empty" style="grid-column:1/-1">${CUR.hs.length?'No hostels match your search.':'No hostels have been added yet. Sign in to the admin portal to add the first one.'}</div>`}</div></div>`);
- const i=$('#q');if(q){i.focus();i.setSelectionRange(q.length,q.length)}i.oninput=()=>drawHome(i.value)}
-async function hostelPage(id){view('<div class="wrap"><div class="empty">Loading...</div></div>');CUR={d:await api('hostel',{id}),fi:0};drawHostel()}
-function drawHostel(){const{hostel:h,floors,beds}=CUR.d,f=floors[CUR.fi],bm={};if(f)beds.filter(b=>b.floor_id===f.id).forEach(b=>bm[b.code]=b);
- const av=fl=>beds.filter(b=>b.floor_id===fl.id&&b.live==='available').length,am=(h.amenities||'').split(',').map(s=>s.trim()).filter(Boolean);
- view(`<div class="wrap"><div class="ph" ${bg(h.image_url)}><div><h1>${esc(h.name)}</h1><div class="meta">${I('pin',15)}${esc([h.address,h.city].filter(Boolean).join(', '))}</div></div></div>
- <div class="two"><div class="card pad"><h3>About this hostel</h3><p style="color:var(--mut);white-space:pre-line">${esc(h.description||'Details coming soon.')}</p>${am.length?`<div class="tags">${am.map(a=>`<span class="chip s">${esc(a)}</span>`).join('')}</div>`:''}
- ${h.phone?`<p style="margin-top:18px"><a class="btn o" href="tel:${esc(h.phone)}">${I('phone',16)} ${esc(h.phone)}</a></p>`:''}</div>
- ${h.maps_url||h.address?`<div class="card map"><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map of ${esc(h.name)}" src="${mapSrc(h)}"></iframe><div class="mapbar"><span>${esc(h.address||h.city||'')}</span><a class="btn sm g" target="_blank" rel="noopener" href="${esc(openUrl(h))}">${I('ext',15)} Open in Google Maps</a></div></div>`:'<div></div>'}</div>
- <div class="sec"><h2>Choose your bed</h2><span class="meta">Select any available bed on the plan</span></div>
- ${f?`<div class="tabs">${floors.map((x,i)=>`<button class="btn ${i===CUR.fi?'on':''}" data-act="floor" data-i="${i}">${esc(x.name)} <span class="chip">${av(x)} free</span></button>`).join('')}</div><div class="card pl">${plan(f.layout||{},{bm})}${legend()}</div>`:'<div class="card empty">The floor plan for this hostel will be published soon.</div>'}</div>`)}
-A.floor=d=>{CUR.fi=+d.i;drawHostel()};
-A.bed=d=>{const b=CUR.d.beds.find(x=>x.id===d.id),f=CUR.d.floors[CUR.fi];CUR.bed=b;
- modal(`${mh('Request bed '+esc(b.code))}<div class="meta" style="margin:-8px 0 16px">${esc(f.name)}${b.price?' - Rs '+b.price.toLocaleString('en-IN')+' per month':''}</div>
- <div class="f2"><div class="full"><label>Full name</label><input id="b_n" autocomplete="name"></div><div><label>Email</label><input id="b_e" type="email" autocomplete="email"></div><div><label>Mobile number</label><input id="b_p" type="tel" autocomplete="tel"></div>
- <div><label>Move-in date</label><input id="b_d" type="date" min="${new Date().toISOString().slice(0,10)}"></div><div><label>Stay (months)</label><input id="b_m" type="number" min="1" max="24" value="6"></div></div>
- <div class="note">${I('clock')}<div>We hold this bed for you while the hostel team reviews your request. Identity verification and agreement steps follow after approval.</div></div>
- <button class="btn g" style="margin-top:18px;width:100%;justify-content:center" data-act="send">Submit request</button>`)};
-A.send=async(d,btn)=>{btn.disabled=true;const r=await api('book',{bed_id:CUR.bed.id,name:$('#b_n').value,email:$('#b_e').value,phone:$('#b_p').value,move_in:$('#b_d').value,months:+$('#b_m').value});
- modal(`${mh('Request received')}<p style="color:var(--mut)">Keep this reference to track your booking:</p><p style="font:600 18px Manrope;margin:10px 0;word-break:break-all;color:var(--sand)">${esc(r.ref)}</p>
- <div class="note">${I('check')}<div>${esc(CUR.bed.code)} is held for ${r.hold_hours} hours. Next: wait for approval, then complete identity verification with the hostel.</div></div>${payNote(r.hostel?.phone)}
- <a class="btn" style="margin-top:16px" href="#/track" data-act="close">Track this booking</a>`);const h=await api('hostel',{id:CUR.d.hostel.id});CUR.d=h&&{...CUR.d,beds:h.beds}};
-const stChip=s=>({pending:['w','Under review'],approved:['i','Approved'],confirmed:['ok','Confirmed'],checked_in:['ok','Checked in'],checked_out:['','Checked out'],rejected:['b','Rejected'],cancelled:['b','Cancelled']}[s]||['',s]);
-const vfChip=v=>({pending:['w','Verification pending'],verified:['ok','Verified'],failed:['b','Verification failed']}[v]||['',v]);
-const chip=(c,t)=>`<span class="chip ${c}">${esc(t)}</span>`;
-function trackPage(){view(`<div class="wrap" style="max-width:560px;padding:60px 22px"><h1 style="font-size:48px;margin-bottom:10px">Track your booking</h1><p style="color:var(--mut);margin-bottom:22px">Enter the reference you received and the email you used.</p>
- <div class="card pad"><label>Booking reference</label><input id="t_r"><div style="height:12px"></div><label>Email</label><input id="t_e" type="email"><button class="btn g" style="margin-top:16px" data-act="track">Check status</button><div id="tr"></div></div></div>`)}
-A.track=async()=>{const r=await api('track',{ref:$('#t_r').value,email:$('#t_e').value});const s=stChip(r.status),v=vfChip(r.verification);
- $('#tr').innerHTML=`<div style="margin-top:20px;display:grid;gap:10px"><div>${chip(s[0],s[1])} ${chip(v[0],v[1])}</div><div>${esc(r.hostels?.name)}, bed ${esc(r.beds?.code)}</div><div class="meta">Move-in ${esc(r.move_in)} for ${r.months} month(s)</div>${payNote(r.hostels?.phone)}</div>`};
-/* ---------- admin ---------- */
-async function admin(){if(!tok){view(`<div class="wrap" style="max-width:440px;padding:90px 22px"><div class="card pad"><h1 style="font-size:40px;margin-bottom:6px">Admin portal</h1><p style="color:var(--mut);margin-bottom:20px">Sign in to manage hostels, floor plans and bookings.</p><label>Password</label><input id="pw" type="password" autocomplete="current-password"> <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-weight:500"><input type="checkbox" style="width:auto" onchange="document.querySelector('#pw').type=this.checked?'text':'password'"> Show password</label><button class="btn g" style="margin-top:16px;width:100%;justify-content:center" data-act="login">${I('lock',16)} Sign in</button></div></div>`);
-  $('#pw').onkeydown=e=>{if(e.key==='Enter')A.login()};return}
- const[hs,bk]=await Promise.all([api('hostels'),api('bookings')]);AD.hs=hs;AD.bk=bk;adminView()}
-A.login=async()=>{const r=await api('login',{password:$('#pw').value});tok=r.token;sessionStorage.setItem('t',tok);admin()};
-A.logout=()=>{tok=null;sessionStorage.removeItem('t');ED=null;go('#/');admin()};
-function adminView(){const T=[['overview','Overview','grid'],['bookings','Bookings','cal'],['hostels','Hostels','building'],['plans','Floor plans','bed']];
- view(`<div class="wrap"><div class="adm"><aside>${T.map(t=>`<button class="btn ${AD.tab===t[0]?'on':''}" data-act="tab" data-t="${t[0]}">${I(t[2])} ${t[1]}</button>`).join('')}<button class="btn" data-act="logout">${I('out')} Sign out</button></aside><section id="pane"></section></div></div>`);
- $('#pane').innerHTML=({overview:ovw,bookings:bkTab,hostels:hsTab,plans:plansTab})[AD.tab]();if(AD.tab==='plans')edInit()}
-A.tab=d=>{AD.tab=d.t;ED=null;adminView()};
-function ovw(){const s={available:0,hold:0,reserved:0,occupied:0,unavailable:0};AD.hs.forEach(h=>Object.keys(s).forEach(k=>s[k]+=(h.stat||{})[k]||0));const tot=Object.values(s).reduce((a,b)=>a+b,0),pend=AD.bk.filter(b=>b.status==='pending').length;
- const T=(n,l)=>`<div class="card stat"><b>${n}</b><span>${l}</span></div>`;
- return`<div class="bar"><h2>Overview</h2></div><div class="stats">${T(AD.hs.length,'Hostels')}${T(tot,'Total beds')}${T(s.available,'Available beds')}${T(s.occupied+s.reserved,'Reserved or occupied')}${T(pend,'Requests to review')}</div>
- <div class="sec"><h2 style="font-size:26px">Coming next</h2></div><div class="mods">${[['wallet','Online payments','Rent, deposits and receipts. Until then, applicants are asked to pay the hostel owner directly.'],['users','Visitor register','Log visitor entry, exit and host resident.'],['wrench','Maintenance tickets','Report faults against a mapped bed, fan or light.'],['clock','Waitlists','Offer freed-up beds to waiting applicants.']].map(m=>`<div class="card">${I(m[0],24)}<h3>${m[1]}</h3><p>${m[2]}</p>${chip('s','Under development')}</div>`).join('')}</div>`}
-const NEXT=b=>({pending:[['approved','Approve','g'],['rejected','Reject','o']],approved:[...(b.verification==='verified'?[['confirmed','Confirm admission','g']]:[['v','Mark verified','g'],['vf','Failed','o']]),['cancelled','Cancel','o']],confirmed:[['checked_in','Check in','g'],['cancelled','Cancel','o']],checked_in:[['checked_out','Check out','g']]}[b.status]||[]);
-function bkTab(){return`<div class="bar"><h2>Bookings</h2></div><div class="card tw"><table><thead><tr><th>Applicant</th><th>Bed</th><th>Move-in</th><th>Status</th><th>Actions</th></tr></thead><tbody>${AD.bk.map(b=>{const s=stChip(b.status),v=vfChip(b.verification),ex=b.status==='pending'&&b.hold_expires_at&&new Date(b.hold_expires_at)<new Date();
- return`<tr><td><b>${esc(b.name)}</b><div class="meta">${esc(b.phone)}<br>${esc(b.email)}</div></td><td>${esc(b.hostels?.name)}<div class="meta">${I('bed',14)}${esc(b.beds?.code)}</div></td><td>${esc(b.move_in)}<div class="meta">${b.months} mo</div></td>
- <td>${chip(s[0],s[1])} ${ex?chip('b','Hold expired'):''}${['approved','confirmed'].includes(b.status)?'<div style="height:6px"></div>'+chip(v[0],v[1]):''}</td><td><div class="acts">${NEXT(b).map(n=>`<button class="btn sm ${n[2]}" data-act="bk" data-id="${b.id}" data-s="${n[0]}">${n[1]}</button>`).join('')}</div></td></tr>`}).join('')||'<tr><td colspan="5" class="empty">No booking requests yet.</td></tr>'}</tbody></table></div>`}
-A.bk=async(d)=>{const p={id:d.id};if(d.s==='v')p.verification='verified';else if(d.s==='vf')p.verification='failed';else p.status=d.s;await api('set_booking',p);AD.bk=await api('bookings');toast('Booking updated');adminView()};
-function hsTab(){return`<div class="bar"><h2>Hostels</h2><button class="btn g" data-act="hform">${I('plus',16)} Add hostel</button></div><div style="display:grid;gap:14px">${AD.hs.map(h=>`<div class="card pad" style="display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap"><div><h3 style="margin:0">${esc(h.name)}</h3><div class="meta">${I('pin',15)}${esc([h.address,h.city].filter(Boolean).join(', ')||'No address yet')}${h.lat!=null?' '+chip('ok','Map linked'):''}</div></div><div class="acts"><button class="btn sm" data-act="hform" data-id="${h.id}">${I('edit',14)} Edit</button><button class="btn sm o" data-act="hdel" data-id="${h.id}">${I('trash',14)} Delete</button></div></div>`).join('')||'<div class="card empty">Add your first hostel to begin.</div>'}</div>`}
-A.hform=d=>{const h=AD.hs.find(x=>x.id===d.id)||{},F=(k,l,t='input',c='')=>`<div class="${c}"><label>${l}</label>${t==='ta'?`<textarea id="f_${k}">${esc(h[k])}</textarea>`:`<input id="f_${k}" value="${esc(h[k])}">`}</div>`;
- modal(`${mh(h.id?'Edit hostel':'Add hostel')}<div class="f2">${F('name','Hostel name','input','full')}${F('city','City or area')}${F('phone','Owner or reception phone')}${F('address','Full address','input','full')}${F('maps_url','Google Maps link','input','full')}
- <div class="full meta" style="margin-top:-6px;font-size:12.5px">Paste any Google Maps link (long, short or embed code). It appears as a live map card on the hostel page.</div>${F('image_url','Cover image URL','input','full')}${F('amenities','Amenities (comma separated)','input','full')}${F('description','Description','ta','full')}</div>
- <button class="btn g" style="margin-top:18px" data-act="hsave" data-id="${h.id||''}">${I('save',16)} Save hostel</button>`)};
-A.hsave=async(d,btn)=>{btn.disabled=true;const p={id:d.id||undefined};['name','city','phone','address','maps_url','image_url','amenities','description'].forEach(k=>p[k]=$('#f_'+k).value);await api('save_hostel',p);A.close();toast('Hostel saved');admin()};
-A.hdel=async d=>{if(!confirm('Delete this hostel with its floors and beds? Hostels that have bookings cannot be deleted.'))return;await api('del_hostel',{id:d.id});toast('Hostel deleted');admin()};
-/* ---------- floor-plan editor ---------- */
-function plansTab(){if(!AD.hs.length)return'<div class="bar"><h2>Floor plans</h2></div><div class="card empty">Add a hostel first.</div>';
- return`<div class="bar"><h2>Floor plans</h2></div><div class="tool"><select id="edH" aria-label="Hostel">${AD.hs.map(h=>`<option value="${h.id}">${esc(h.name)}</option>`).join('')}</select><select id="edF" aria-label="Floor"></select><button class="btn" data-act="newFloor">${I('plus',16)} Floor</button><button class="btn o" data-act="delFloor">${I('trash',16)}</button><button class="btn g" data-act="saveL">${I('save',16)} Save layout</button></div>
- <div class="ed"><div class="pal">${PAL.map(p=>`<button class="btn sm" data-act="add" data-t="${p[0]}">${I(p[2],16)} ${p[1]}</button>`).join('')}</div><div class="card pl" id="cv"></div><div class="card panel" id="pn"></div></div>
- <p class="meta" style="margin-top:12px">Drag to move, drag the corner handle to resize. Each grid square is 1 metre. Beds are created in inventory when you save.</p>`}
-const cur=()=>ED?.L?.objs.find(o=>o.id===ED.sel);
-async function edInit(){if(!AD.hs.length)return;await loadH(AD.hs[0].id)}
-async function loadH(id,fid){const r=await api('hostel',{id});ED={hid:id,floors:r.floors,fid:fid||r.floors[0]?.id};$('#edH').value=id;fl()}
-function fl(){$('#edF').innerHTML=ED.floors.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('')||'<option value="">No floors yet</option>';$('#edF').value=ED.fid||'';
- const f=ED.floors.find(x=>x.id===ED.fid);ED.L=f?JSON.parse(JSON.stringify(f.layout||{objs:[]})):null;if(ED.L&&!ED.L.objs)ED.L.objs=[];ED.sel=null;ED.dirty=0;draw();panel();bindCv()}
-const draw=()=>{$('#cv').innerHTML=ED.L?plan(ED.L,{edit:1,sel:ED.sel}):'<div class="empty">Add a floor to start drawing.</div>'};
-function panel(){const o=cur();$('#pn').innerHTML=!o?'<div class="meta">Select an object to edit its properties.</div>':`<b style="font:500 20px Fraunces">${PAL.find(p=>p[0]===o.t)[1]}</b><div class="f2"><div style="grid-column:1/-1"><label>Label</label><input data-k="l" value="${esc(o.l)}"></div>
- ${o.t==='bed'?`<div><label>Bed code</label><input data-k="code" value="${esc(o.code)}"></div><div><label>Rent / month</label><input data-k="price" type="number" value="${o.price||0}"></div>`:''}
- ${['x','y','w','h','r'].map(k=>`<div><label>${{x:'X',y:'Y',w:'Width',h:'Height',r:'Rotation'}[k]}</label><input data-k="${k}" type="number" value="${o[k]||0}"></div>`).join('')}</div>
- <div class="acts"><button class="btn sm" data-act="rot">Rotate 90</button><button class="btn sm" data-act="dup">Duplicate</button><button class="btn sm o" data-act="delObj">${I('trash',14)} Delete</button></div>`}
-document.addEventListener('input',e=>{const k=e.target.dataset?.k,o=cur();if(!k||!o)return;o[k]=e.target.type==='number'?+e.target.value:e.target.value;ED.dirty=1;draw()});
-document.addEventListener('change',async e=>{try{if(e.target.id==='edH')await loadH(e.target.value);if(e.target.id==='edF'){if(ED.dirty&&!confirm('Discard unsaved changes on this floor?')){e.target.value=ED.fid;return}ED.fid=e.target.value;fl()}}catch(x){toast(x.message,1)}});
-function bindCv(){const cv=$('#cv');let d=null;const P=e=>{const s=cv.querySelector('svg'),p=s.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(s.getScreenCTM().inverse())},sn=v=>Math.round(v/10)*10;
- cv.onpointerdown=e=>{if(!ED.L)return;const g=e.target.closest('[data-o]');if(!g){ED.sel=null;draw();panel();return}const o=ED.L.objs.find(x=>x.id===g.dataset.o);ED.sel=o.id;d={o,p:P(e),x:o.x,y:o.y,w:o.w,h:o.h,rs:!!e.target.closest('[data-rs]')};cv.setPointerCapture(e.pointerId);draw();panel()};
- cv.onpointermove=e=>{if(!d)return;const p=P(e),dx=p.x-d.p.x,dy=p.y-d.p.y;if(d.rs){const r=(d.o.r||0)*Math.PI/180,c=Math.cos(r),s=Math.sin(r);d.o.w=Math.max(8,sn(d.w+dx*c+dy*s));d.o.h=Math.max(8,sn(d.h-dx*s+dy*c))}else{d.o.x=sn(d.x+dx);d.o.y=sn(d.y+dy)}ED.dirty=1;draw()};
- cv.onpointerup=()=>{if(d){d=null;panel()}}}
-A.add=d=>{if(!ED?.L)return toast('Add a floor first',1);const[w,h,l]=DEF[d.t],o={id:uid(),t:d.t,x:Math.round((500-w/2)/10)*10,y:Math.round((320-h/2)/10)*10,w,h,r:0,l};
- if(d.t==='bed'){const f=ED.floors.find(x=>x.id===ED.fid),pre=(f.name.replace(/[^a-z0-9]/gi,'').slice(0,4)||'B').toUpperCase(),used=new Set(ED.L.objs.map(x=>x.code));let n=1;while(used.has(pre+'-'+String(n).padStart(2,'0')))n++;o.code=pre+'-'+String(n).padStart(2,'0');o.price=0}
- ED.L.objs.push(o);ED.sel=o.id;ED.dirty=1;draw();panel()};
-A.rot=()=>{const o=cur();if(o){o.r=((o.r||0)+90)%360;ED.dirty=1;draw();panel()}};
-A.dup=()=>{const o=cur();if(!o)return;const c={...o,id:uid(),x:o.x+20,y:o.y+20};if(c.t==='bed'){let n=2;while(ED.L.objs.some(x=>x.code===o.code+'-'+n))n++;c.code=o.code+'-'+n}ED.L.objs.push(c);ED.sel=c.id;ED.dirty=1;draw();panel()};
-A.delObj=()=>{if(!cur())return;ED.L.objs=ED.L.objs.filter(o=>o.id!==ED.sel);ED.sel=null;ED.dirty=1;draw();panel()};
-A.saveL=async()=>{if(!ED?.L)return;const c=ED.L.objs.filter(o=>o.t==='bed').map(o=>(o.code||'').trim());if(c.some(x=>!x)||new Set(c).size!==c.length)return toast('Every bed needs a unique code',1);
- await api('save_layout',{floor_id:ED.fid,layout:ED.L});ED.floors.find(f=>f.id===ED.fid).layout=JSON.parse(JSON.stringify(ED.L));ED.dirty=0;toast('Layout saved and bed inventory updated')};
-A.newFloor=()=>modal(`${mh('Add floor')}<div class="f2"><div><label>Floor name</label><input id="nf_n" placeholder="Ground floor"></div><div><label>Level number</label><input id="nf_l" type="number" value="0"></div></div><button class="btn g" style="margin-top:18px" data-act="mkFloor">Add floor</button>`);
-A.mkFloor=async()=>{const r=await api('save_floor',{hostel_id:ED.hid,name:$('#nf_n').value,level:+$('#nf_l').value||0});A.close();await loadH(ED.hid,r.id)};
-A.delFloor=async()=>{if(!ED?.fid||!confirm('Delete this floor and its beds? Floors with bookings cannot be deleted.'))return;await api('del_floor',{id:ED.fid});await loadH(ED.hid)};
-async function router(){const h=location.hash||'#/';try{if(h.startsWith('#/h/'))await hostelPage(h.slice(4));else if(h==='#/track')trackPage();else if(h.startsWith('#/admin'))await admin();else await home()}catch(e){view(`<div class="wrap"><div class="card empty" style="margin-top:40px">${esc(e.message)}</div></div>`)}}
-addEventListener('hashchange',router);router();
+const LIVE={available:['a','Available'],hold:['h','On hold'],reserved:['r','Reserved'],occupied:['o','Taken'],unavailable:['u','Unavailable']};
+function shape(o,st){const{t,w,h}=o,l=esc(o.l),T=(x,y,a='')=>l?`<text x="${x}" y="${y}" class="p-t" ${a}>${l}</text>`:'';
+ switch(t){case'room':return`<rect width="${w}" height="${h}" rx="4" class="p-room"/>${T(10,20)}`;
+ case'corridor':return`<rect width="${w}" height="${h}" rx="4" class="p-corr"/>${T(10,h/2+4)}`;
+ case'balcony':return`<rect width="${w}" height="${h}" rx="4" class="p-bal"/>${T(10,20)}`;
+ case'washroom':return`<rect width="${w}" height="${h}" rx="4" class="p-wc"/>${T(w/2,h/2+4,'text-anchor="middle"')}`;
+ case'bed':{const ph=Math.min(14,h*.22);return`<g class="bed ${(LIVE[st]||LIVE.unavailable)[0]}"><rect class="bb" width="${w}" height="${h}" rx="6"/><rect class="bp2" x="4" y="4" width="${Math.max(w-8,1)}" height="${ph}" rx="4"/><text x="${w/2}" y="${h/2+ph/2+4}">${esc(o.code)}</text></g>`}
+ case'door':return`<path d="M0 0H${w}" class="p-door"/><path d="M${w} 0A${w} ${w} 0 0 1 0 ${w}" class="p-swing"/>`;
+ case'window':return`<rect width="${w}" height="${h}" class="p-win"/>`;
+ case'stairs':return`<rect width="${w}" height="${h}" class="p-line"/>${Array.from({length:Math.max(0,Math.floor(h/10))},(_,i)=>`<path d="M0 ${i*10+10}H${w}" class="p-thin"/>`).join('')}${T(w/2,h/2+4,'text-anchor="middle"')}`;
+ case'lift':return`<rect width="${w}" height="${h}" class="p-line"/><path d="M0 0 ${w} ${h}M${w} 0 0 ${h}" class="p-thin"/>`;
+ case'fan':{const r=Math.min(w,h)/2;return`<g transform="translate(${w/2} ${h/2})" class="p-fan"><circle r="${r}" stroke-opacity=".4"/><path d="M0 0 ${r*.9} 0M0 0-${r*.9} 0M0 0 0 ${r*.9}M0 0 0-${r*.9}"/></g>`}
+ case'light':return`<circle cx="${w/2}" cy="${h/2}" r="${Math.max(Math.min(w,h)/2-1,1)}" class="p-light"/>`;
+ case'rack':return`<rect width="${w}" height="${h}" class="p-line"/><path d="M0 0 ${w} ${h}M${w} 0 0 ${h}" class="p-thin"/>`;
+ default:return`<rect width="${w}" height="${h}" class="p-line"/>`}}
+function planSVG(objs,o={}){const bm=o.bm||{};let x1=0,y1=0,x2=1000,y2=640;
+ if(objs.length){x1=Math.min(...objs.map(b=>b.x))-30;y1=Math.min(...objs.map(b=>b.y))-30;x2=Math.max(...objs.map(b=>b.x+b.w))+30;y2=Math.max(...objs.map(b=>b.y+b.h))+30}
+ const g=objs.map(ob=>{const bd=ob.t==='bed',b=bd?bm[ob.code]:null,st=bd?(b?.live||'unavailable'):'',pick=o.pick&&b&&st==='available';
+  return`<g transform="translate(${ob.x} ${ob.y}) rotate(${ob.r||0} ${ob.w/2} ${ob.h/2})"${pick?` data-act="bed" data-id="${esc(b.id)}" tabindex="0" role="button" aria-label="Bed ${esc(ob.code)}${b.price?', '+money(b.price)+' per month':''}" class="pk${o.sel===b.id?' sel':''}"`:''}>${bd?`<title>${esc(ob.code)}: ${(LIVE[st]||LIVE.unavailable)[1]}${b?.price?' · '+money(b.price)+'/month':''}</title>`:''}${shape(ob,st)}</g>`}).join('');
+ return`<svg viewBox="${x1} ${y1} ${x2-x1} ${y2-y1}" class="plan" role="img" aria-label="Floor plan">${g}</svg>`}
+const legend=()=>`<div class="lgd">${Object.values(LIVE).map(x=>`<span><i class="dot ${x[0]}"></i>${x[1]}</span>`).join('')}</div>`;
+
+/* ---------- public pages ---------- */
+const GR=[['#2c4a41','#0f1c18'],['#2a3a5a','#0e1526'],['#5a4630','#1f160d'],['#4a2c44','#1a0e17'],['#2c4a5a','#0e1a20']];
+const grad=id=>{let n=0;for(const c of String(id))n=(n*31+c.charCodeAt(0))|0;return GR[Math.abs(n)%GR.length]};
+function cover(h,t){const g=grad(h.id);return`<div class="cv" style="--c1:${g[0]};--c2:${g[1]}"><div class="bgi"${bgi(h.image_url)}></div>${safe(h.image_url)?'':I('bld',56)}${h.city?`<span class="chip gb">${I('pin',12)}${esc(h.city)}</span>`:''}${t?`<div class="t"><b>${esc(h.name)}</b>${h.address?`<small>${esc(h.address)}</small>`:''}</div>`:''}</div>`}
+const addrOf=h=>[h.address,h.city].filter(Boolean).join(', ');
+const mapSrc=h=>`https://maps.google.com/maps?q=${h.lat!=null?h.lat+','+h.lng:encodeURIComponent([h.name,h.address,h.city].filter(Boolean).join(', '))}&z=16&output=embed`;
+const openUrl=h=>safe(h.maps_url)||`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([h.name,h.address,h.city].filter(Boolean).join(', '))}`;
+async function homePage(){if(!S.hs)view(`<div class="ph"><div class="sk" style="height:56px;width:70%"></div><div class="sk" style="height:18px;width:45%;margin-top:14px"></div></div><div class="grid">${'<div class="sk" style="height:270px"></div>'.repeat(3)}</div>`);
+ const hs=S.hs=await get('hostels'),fac=h=>(h.amenities||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,3).join(' · ');
+ view(`<section class="hero"><span class="chip">${I('bld',13)}${hs.length} hostel${hs.length===1?'':'s'}</span><h1>Find your bed.<br><span class="gt">See exactly where it is.</span></h1><p>Browse our hostels, check facilities and house rules, and apply in minutes. Once you are approved, you pick your exact bed on the floor plan.</p>${hs.length>3?`<label class="srch">${I('search',18)}<input id="q" type="search" placeholder="Search by name or area" aria-label="Search hostels"></label>`:''}</section>
+ <div class="grid" id="hg">${hs.map(h=>`<a class="card hc" href="#/h/${esc(h.id)}" data-s="${esc([h.name,h.city,h.address].join(' ').toLowerCase())}">${cover(h,1)}<div class="hcb"><span>${esc(fac(h)||'View details and apply')}</span>${I('arrow',18)}</div></a>`).join('')||`<div class="card lockc" style="grid-column:1/-1"><div class="bg">${I('bld',24)}</div><h3>No hostels yet</h3><p>Hostels added in the admin portal appear here.</p></div>`}</div><p id="nores" class="mu pl4" hidden>No hostels match your search.</p>
+ <div class="sec">How it works</div><div class="card steps">${[['id','Apply','Share your details and accept the house rules.'],['check','Get approved','The hostel reviews your application and emails you.'],['bed','Pick your bed','Choose the exact bed you want on the floor plan.'],['home','Move in','Pay the owner, get verified and check in.']].map((s,i)=>`<div><i>${I(s[0],20)}</i><b>${i+1}. ${s[1]}</b><span>${s[2]}</span></div>`).join('')}</div>
+ ${S.ut?'':`<div class="card pd cta"><div><h3>Already applied?</h3><p class="mu">Sign in with your email to track your application, fees and requests.</p></div><button class="btn bp" data-act="signin">Sign in</button></div>`}`);
+ const q=$('#q');if(q)q.oninput=()=>{const v=q.value.trim().toLowerCase();let n=0;$$('#hg .hc').forEach(c=>{const m=c.dataset.s.includes(v);c.hidden=!m;n+=m});$('#nores').hidden=n>0}}
+async function hostelPage(id){view(`<div class="sk" style="height:40px;width:140px"></div><div class="sk" style="height:300px;margin-top:14px"></div>${skel(2)}`);
+ const[r]=await Promise.all([get('hostel',{id}),S.ut&&!S.me?api('me').then(m=>S.me=m).catch(()=>0):0]);
+ const h=S.h=r.hostel,am=(h.amenities||'').split(',').map(s=>s.trim()).filter(Boolean),addr=addrOf(h),mine=S.me?.apps.find(a=>a.hostel_id===h.id&&!['rejected','left'].includes(a.status));
+ document.title=h.name+' · N.N Reddy Hostels';
+ view(`<a class="btn bs bm" href="#/">${I('back',16)}All hostels</a><div class="hero2">${cover(h,0)}</div>
+ <div class="ph" style="padding-top:18px"><h1>${esc(h.name)}</h1>${addr?`<p>${I('pin',14)} ${esc(addr)}</p>`:''}</div>
+ ${h.description?`<div class="card pd"><p class="desc">${esc(h.description)}</p></div>`:''}
+ ${am.length?`<div class="sec">Facilities</div><div class="card pd"><div class="tg">${am.map(x=>`<span class="chip">${I('check',13)}${esc(x)}</span>`).join('')}</div></div>`:''}
+ ${h.maps_url||addr?`<div class="sec">Location</div><div class="card map"><iframe loading="lazy" title="Map of ${esc(h.name)}" referrerpolicy="no-referrer-when-downgrade" src="${esc(mapSrc(h))}"></iframe><div class="mb"><span>${esc(addr)}</span><a class="btn bs bm" target="_blank" rel="noopener noreferrer" href="${esc(openUrl(h))}">${I('ext',14)}Open in Maps</a></div></div>`:''}
+ ${h.phone?`<div class="sec">Contact</div><div class="card pd"><div class="li"><span>Owner or reception</span><b><a href="tel:${esc(h.phone)}">${esc(h.phone)}</a></b></div></div>`:''}
+ <div class="sec">House rules</div><div class="card pd">${TERMS.map((t,i)=>`<div class="rl"><i>${i+1}</i><span>${esc(t)}</span></div>`).join('')}</div>
+ <div class="note">${I('lock',20)}<div>Bed availability and the floor plan open once the hostel approves your application.</div></div>
+ <div class="apb">${mine?`<a class="btn bp bw" href="#/me">View my application</a>`:`<button class="btn bp bw" data-act="apply">Apply to this hostel</button>`}</div>`)}
+
+/* ---------- application (4 steps) ---------- */
+let AP={h:null,s:0,f:{}};
+const AST=[['Your details',f=>FL('name','Full name','text',f.name,'autocomplete="name"')+FL('phone','Mobile number','tel',f.phone,'autocomplete="tel"')+FL('email','Email address','email',f.email,'autocomplete="email"')+FL('aadhaar','Aadhaar number (optional)','text',f.aadhaar,'inputmode="numeric" maxlength="14"')+'<p class="fine">Your email is how you sign in later, so use one you can open. Aadhaar is seen only by the hostel office.</p>'],
+ ['Family and address',f=>FL('parent_name','Parent or guardian name','text',f.parent_name)+FL('parent_phone','Parent or guardian mobile','tel',f.parent_phone)+TA('address','Permanent address',f.address)],
+ ['Your stay',f=>SEL('purpose','Purpose of stay',['Study','Coaching','Job','Other'],f.purpose)+FL('college','College or coaching centre','text',f.college)+FL('office','Office name, address and phone (if working)','text',f.office)+`<label class="lb" for="join_date">Date of joining</label><input class="fi" id="join_date" data-f="join_date" type="date" min="${today()}" value="${esc(f.join_date)}">`+FL('id_proof','ID proof type and number','text',f.id_proof)+FL('photo_url','Photo link (optional, https://…)','url',f.photo_url)],
+ ['Review and confirm',f=>`<div class="rv2">${[['Hostel',AP.h.name],['Name',f.name],['Mobile',f.phone],['Email',f.email],['Parent or guardian',f.parent_name],['Purpose',f.purpose],['Joining',f.join_date&&day(f.join_date)]].filter(x=>x[1]).map(x=>`<div><span>${x[0]}</span><b>${esc(x[1])}</b></div>`).join('')}</div><details class="terms"><summary>House rules (${TERMS.length})</summary><ol>${TERMS.map(t=>`<li>${esc(t)}</li>`).join('')}</ol></details>${[['c1','The details I have given are true.'],['c2','I have read the house rules and will follow them.']].map(c=>`<label class="ck"><input type="checkbox" id="${c[0]}"><span>${c[1]}</span></label>`).join('')}`]];
+A.apply=()=>{const h=S.h;if(!h)return;AP={h,s:0,f:AP.h?.id===h.id?AP.f:{}};
+ sheet('Apply to '+h.name,'Takes about two minutes',`<div class="pt">${AST.map((_,i)=>`<div class="pn" id="pn${i}">${i+1}</div>`).join('')}</div><div id="pgx"></div><div class="ft2"><button class="btn bs" data-act="apBack" id="apb">Back</button><button class="btn bp" data-act="apNext" id="apn">Continue</button></div>`);apShow()};
+const apGrab=()=>$$('#pgx [data-f]').forEach(i=>AP.f[i.dataset.f]=i.value.trim());
+function apShow(){const s=AP.s;$('#pgx').innerHTML=`<h4 class="sth">${AST[s][0]}</h4>`+AST[s][1](AP.f);$('#pgx').className='pg';AST.forEach((_,i)=>$('#pn'+i).className='pn'+(i===s?' on':i<s?' dn':''));
+ $('#apb').style.visibility=s?'visible':'hidden';$('#apn').textContent=s===AST.length-1?'Submit application':'Continue';$('#sb').scrollTop=0;setTimeout(()=>$('#pgx input,#pgx select')?.focus({preventScroll:true}),60)}
+A.apBack=()=>{apGrab();AP.s=Math.max(0,AP.s-1);apShow()};
+A.apNext=async()=>{apGrab();const f=AP.f,g=k=>f[k]||'';
+ if(AP.s===0){if(g('name').length<2)fail('name','Enter your full name');if(!P_RE.test(g('phone')))fail('phone','Enter a valid mobile number');if(!E_RE.test(g('email')))fail('email','Enter a valid email address');if(g('aadhaar')&&!/^\d{12}$/.test(g('aadhaar').replace(/\s/g,'')))fail('aadhaar','Aadhaar number must be 12 digits')}
+ if(AP.s===1){if(g('parent_phone')&&!P_RE.test(g('parent_phone')))fail('parent_phone','Enter a valid parent mobile number');if(g('address').length<5)fail('address','Enter your permanent address')}
+ if(AP.s===2&&g('photo_url')&&!/^https?:\/\//i.test(g('photo_url')))fail('photo_url','The photo link must start with https://');
+ if(AP.s===3&&!['c1','c2'].every(c=>$('#'+c).checked))throw new Error('Please tick both confirmations');
+ if(AP.s<AST.length-1){AP.s++;return apShow()}
+ await api('apply',{hostel_id:AP.h.id,...f});const em=f.email;AP={h:null,s:0,f:{}};S.me=null;$('#stt').textContent='Application sent';$('#sth').textContent='';
+ $('#sb').innerHTML=`<div class="ok2"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-17"/></svg><h3>Application received</h3><p class="mu">The hostel team will review it and email you the decision. To follow its progress here, verify your email with a one-time code.</p><button class="btn bp bw" style="margin-top:18px" data-act="signin" data-email="${esc(em)}">Verify email and track</button><button class="btn bs bw" style="margin-top:10px" data-act="close">Done</button></div>`};
+
+/* ---------- applicant sign-in: email + one-time code ---------- */
+A.signin=d=>{const e=d?.email||S.si||S.ue||'';sheet('Sign in','We will email you a 6-digit code',`<div id="si">${FL('si_e','Email you applied with','email',e,'autocomplete="email"')}<button class="btn bp bw" data-act="otpSend">Email me a code</button><p class="fine" style="text-align:center;margin:14px 0 0">Hostel staff? <a href="#/admin">Open the admin portal</a></p></div>`);if(d?.email)A.otpSend().catch(x=>toast(x.message,1))};
+A.otpSend=async()=>{const e=val('si_e').toLowerCase()||S.si;if(!E_RE.test(e))fail('si_e','Enter a valid email address');await api('otp_send',{email:e});S.si=e;$('#sth').textContent='Check your inbox';
+ $('#si').innerHTML=`<p class="mu" style="margin-bottom:14px">If <b>${esc(e)}</b> has an application, a 6-digit code is on its way. It expires in 10 minutes; check spam if you do not see it.</p><input class="fi otp" id="si_c" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="6-digit code" placeholder="000000"><button class="btn bp bw" data-act="otpVerify" id="siv">Verify and sign in</button><div class="row8" style="justify-content:space-between;margin-top:12px"><button class="btn bs bm" data-act="signin" data-email="">Change email</button><button class="btn bs bm" data-act="otpSend">Send a new code</button></div>`;
+ const c=$('#si_c');c.focus();c.oninput=()=>{c.value=c.value.replace(/\D/g,'').slice(0,6);if(c.value.length===6)$('#siv').click()}};
+A.otpVerify=async()=>{const c=val('si_c');if(!/^\d{6}$/.test(c))fail('si_c','Enter the 6-digit code');const r=await api('otp_verify',{email:S.si,code:c});
+ S.ut=r.token;S.ue=r.email;ss('ut',r.token);ss('ue',r.email);S.me=null;S.app=null;closeSheet();toast('Signed in');go('#/me')};
+function userOut(expired){S.ut=S.ue=S.me=S.app=null;ss('ut',null);ss('ue',null);bar();if(expired)toast('Your session ended. Please sign in again.',1);go(expired?'#/me':'#/')}
+A.signout=async()=>{if(await confirmUI('Sign out?','You can sign in again any time with a new email code.','Sign out')){userOut();toast('Signed out')}};
+
+/* ---------- applicant account ---------- */
+const ORDER=['pending','approved','assigned','paid','verified','resident'];
+/* [title, text once done, text while it is the next step, icon] */
+const STEP=[['Application sent','We have your details.','','user'],['Hostel approval','Approved by the hostel.','The hostel team is reviewing your application.','id'],['Bed reserved','Your bed is reserved.','Choose your bed from the floor plan.','bed'],['Payment submitted','Payment reference received.','Pay the fee and submit your payment reference in Fees.','wal'],['Payment verified','Payment confirmed by the hostel.','The hostel is checking your payment.','check'],['Checked in','Welcome home. Raise requests from the Requests tab.','The hostel checks you in when you arrive.','home']];
+const TCH={open:['--hold','Open'],in_progress:['--res','In progress'],done:['--ok','Resolved']};
+async function mePage(tab){if(!S.ut){view(`<div class="ph"><h1>Your stay</h1><p>Track your application, fees and requests.</p></div>${lockC('Sign in to continue','We will email a one-time code to the address you applied with.',`<button class="btn bp" style="margin-top:16px" data-act="signin">Sign in</button>`)}`);return}
+ if(!S.me)view(skel(3));const r=S.me=await get('me'),apps=r.apps;
+ if(!apps.length){view(`<div class="ph"><h1>Your stay</h1><p>${esc(r.email)}</p></div>${lockC('No applications yet','Choose a hostel and apply. Your application will appear here.',`<a class="btn bp" style="margin-top:16px" href="#/">Browse hostels</a>`,'bld')}<button class="btn bs bw" style="margin-top:22px" data-act="signout">${I('out',16)}Sign out</button>`);return}
+ const a=apps.find(x=>x.id===S.app)||apps.find(x=>!['rejected','left'].includes(x.status))||apps[0];S.app=a.id;
+ const sw=apps.length>1?`<div style="margin:0 0 16px">${segH('meApp',apps.map(x=>[x.id,esc(x.hostels?.name||'Hostel')]),a.id)}</div>`:'';
+ view(({fees:meFees,requests:meReq}[tab]||meStay)(a,sw,r.tickets.filter(t=>t.app_id===a.id)));
+ if(tab==='stay'&&a.status==='approved')loadPlan(a).catch(e=>{if(e===STALE)return;const el=$('#pv');if(el)el.innerHTML=`<div class="empty">${esc(e.message)}</div>`})}
+A.meApp=d=>{S.app=d.v;bar();router()};
+function meStay(a,sw){const h=a.hostels||{},i=ORDER.indexOf(a.status),R=(l,v)=>v?`<div class="li"><span>${l}</span><b>${esc(v)}</b></div>`:'';
+ const tl=`<div class="card tl">${STEP.map((s,k)=>{const d=k<=i,c=k===i+1;return`<div class="tn ${d?'d':c?'c':''}"><div class="ti2">${I(d?'check':s[3],17)}</div><div><h4>${s[0]}</h4><p>${k===2&&d&&a.bed_code?'Bed '+esc(a.bed_code)+' is reserved for you.':d?s[1]:s[2]||s[1]}</p></div></div>`}).join('')}</div>`;
+ return`<div class="ph">${chip(SCH[a.status]?.[0]||'--na',h.name||'Hostel')}<h1>Hi, ${esc((a.name||'').split(' ')[0])}</h1><p>${a.bed_code?'Bed '+esc(a.bed_code)+' · ':''}Applied ${day(a.created_at)}</p></div>${sw}
+ ${a.status==='rejected'?lockC('Application not approved','Please contact the hostel if you have questions.','','info'):a.status==='left'?lockC('You have checked out','Thank you for staying with us.','','home'):tl}
+ ${a.status==='approved'?`<div class="sec">Choose your bed</div><div class="card" id="pv"><div class="empty">Loading the floor plan…</div></div><p class="fine" style="margin:10px 4px 0">Tap a green bed, then reserve it at the bottom of the screen. You can choose only once.</p>`:''}
+ <div class="sec">Your details</div><div class="card pd">${R('Name',a.name)}${R('Mobile',a.phone)}${R('Email',a.email)}${R('Aadhaar',a.aadhaar&&'XXXX XXXX '+a.aadhaar.slice(-4))}${R('Parent or guardian',a.parent_name)}${R('Parent mobile',a.parent_phone)}${R('Address',a.address)}${R('Purpose',a.purpose)}${R('College',a.college)}${R('Office',a.office)}${R('Joining',a.join_date&&day(a.join_date))}</div>
+ ${h.phone?`<div class="sec">Hostel contact</div><div class="card pd"><div class="li"><span>Phone</span><b><a href="tel:${esc(h.phone)}">${esc(h.phone)}</a></b></div></div>`:''}
+ <button class="btn bs bw" style="margin-top:22px" data-act="signout">${I('out',16)}Sign out</button>`}
+function meFees(a,sw){const h=a.hostels||{},i=ORDER.indexOf(a.status),due=a.amount_due||0,bal=Math.max(0,due-(a.paid_amount||0)),late=a.status==='assigned'&&a.due_at&&new Date(a.due_at)<new Date();
+ const top=`<div class="ph"><h1>Fees</h1><p>${esc(h.name||'')}${i>=2?(a.plan==='bed_only'?' · Bed only':' · With food'):''}</p></div>${sw}`;
+ if(i<2)return top+lockC('Fee details are not ready yet','They appear once your bed is reserved.','','wal');
+ const st=a.status==='assigned'?(late?['--occ','Overdue']:['--hold','Payment due']):a.status==='paid'?['--hold','Being verified']:bal?['--hold','Balance due']:['--ok','Paid up'];
+ return`${top}<div class="card big"><small>${a.status==='assigned'?'Amount to pay':'Balance due'}</small><b>${money(a.status==='assigned'?due:bal)}</b><div class="row8">${chip(...st)}${a.status==='assigned'&&a.due_at?`<span class="mu" style="font-size:13.5px">Pay by ${dt(a.due_at)}</span>`:''}</div></div>
+ <div class="st" style="margin-top:12px"><div class="card"><small>Fee</small><b>${money(due)}</b></div><div class="card"><small>Paid</small><b>${money(a.paid_amount)}</b></div></div>
+ ${a.status==='assigned'?`<div class="sec">Submit your payment</div><div class="card pd"><p class="mu" style="margin-bottom:14px">Pay ${money(due)} to the hostel owner${h.phone?` (<a href="tel:${esc(h.phone)}">${esc(h.phone)}</a>)`:''} by UPI, then enter the UPI transaction ID from your payment app.</p>${FL('p_ref','UPI transaction ID','text','','autocomplete="off" data-enter="pay"')}<button class="btn bp bw" data-act="pay" data-id="${esc(a.id)}">Submit payment</button></div>`:''}
+ ${a.status==='paid'?`<div class="note">${I('clock',20)}<div>Payment reference <b>${esc(a.paid_ref||'')}</b> submitted. The hostel will confirm it soon.</div></div>`:''}
+ ${a.verified_at?`<div class="note">${I('check',20)}<div>Payment of <b>${money(a.paid_amount)}</b> verified on ${day(a.verified_at)}.</div></div>`:''}
+ <div class="note">${I('info',20)}<div>Online card and UPI checkout is coming soon. Until then, pay the hostel owner directly and keep your receipt.</div></div>`}
+A.pay=async d=>{const ref=val('p_ref');if(ref.length<4)fail('p_ref','Enter the UPI transaction ID from your payment app');await api('pay',{app_id:d.id,ref});toast('Payment submitted');router()};
+function meReq(a,sw,tk){const res=a.status==='resident',top=`<div class="ph"><h1>Requests</h1><p>Report a problem and follow its progress.</p></div>${sw}`;
+ if(!res&&!tk.length)return top+lockC('Requests open after check-in','Once you move in, you can report problems here and follow their progress.','','wr');
+ return`${top}${res?`<div class="card pd">${SEL('rq_c','Category',['Electrical','Plumbing','Cleaning','Wi-Fi','Furniture','Food','Other'])}${FL('rq_t','What is the problem?','text','','maxlength="100"')}${TA('rq_d','More details (optional)')}<button class="btn bp bw" data-act="ticket" data-id="${esc(a.id)}">Send request</button></div><div class="sec">Your requests</div>`:''}
+ ${tk.map(t=>`<div class="card it"><div class="r"><div><b>${esc(t.title)}</b><small>${day(t.created_at)}</small>${t.detail?`<p class="dtl">${esc(t.detail)}</p>`:''}</div>${chip(...(TCH[t.status]||TCH.open))}</div>${t.reply?`<div class="reply">${I('user',14)}<span><b>Hostel:</b> ${esc(t.reply)}</span></div>`:''}</div>`).join('')||'<p class="mu pl4">No requests yet.</p>'}`}
+A.ticket=async d=>{const t=val('rq_t');if(t.length<3)fail('rq_t','Please describe the problem');await api('ticket_new',{app_id:d.id,title:val('rq_c')+': '+t,detail:val('rq_d')});toast('Request sent');router()};
+
+/* ---------- bed choice ---------- */
+async function loadPlan(a){const d=await get('plan',{hostel_id:a.hostel_id});const fi=Math.max(0,d.floors.findIndex(f=>d.beds.some(b=>b.floor_id===f.id&&b.live==='available')));S.pl={d,fi,app:a.id};drawPlan()}
+function drawPlan(){const P=S.pl,el=$('#pv');if(!P||!el)return;const{floors,beds}=P.d,f=floors[P.fi],bm={},free=fl=>beds.filter(b=>b.floor_id===fl.id&&b.live==='available').length;if(f)beds.filter(b=>b.floor_id===f.id).forEach(b=>bm[b.code]=b);
+ el.innerHTML=f?`${floors.length>1?`<div class="pvs">${segH('plFl',floors.map((x,i)=>[i,`${esc(x.name)} · ${free(x)}`]),P.fi)}</div>`:''}<div class="pw"><div class="vp">${planSVG(f.layout?.objs||[],{bm,pick:1,sel:S.sel?.id})}</div></div>${legend()}`:'<div class="empty">The floor plan will be published soon. The hostel can also assign a bed for you.</div>';syncAll()}
+A.plFl=d=>{S.pl.fi=+d.v;bar();drawPlan()};
+A.bed=d=>{const b=S.pl?.d.beds.find(x=>x.id===d.id);if(!b)return;S.sel=b;$$('.pk').forEach(x=>x.classList.toggle('sel',x.dataset.id===b.id));bar('Bed '+b.code,b.price?money(b.price)+' per month':'Selected bed')};
+function bar(t,s){const b=$('#bar');if(!t){b.classList.remove('on');S.sel=null;$$('.pk.sel').forEach(x=>x.classList.remove('sel'));return}$('#bn').textContent=t;$('#bs2').textContent=s||'Selected bed';b.classList.add('on')}
+A.pickBed=async()=>{const b=S.sel;if(!b||!S.pl)return;if(!await confirmUI(`Reserve bed ${b.code}?`,`${b.price?money(b.price)+' per month. ':''}You can choose only once. After this, the hostel shares the payment details.`,'Reserve bed'))return;
+ await api('pick_bed',{app_id:S.pl.app,bed_id:b.id});bar();toast(`Bed ${b.code} reserved`);go('#/me')};
+
+/* ---------- admin portal ---------- */
+function adminOut(expired){S.tok=null;S.AD=null;ss('t',null);window.PE?.reset();if(expired){toast('Admin session ended. Please sign in again.',1);go('#/admin')}else go('#/')}
+A.adminOut=()=>{if(window.PE?.dirty&&!confirm('Discard unsaved floor plan changes?'))return;adminOut()};
+A.login=async()=>{const p=$('#pw')?.value||'';if(!p)fail('pw','Enter the admin password');const r=await api('login',{password:p});S.tok=r.token;ss('t',r.token);S.AD=null;toast('Welcome back');router()};
+A.pwShow=(d,t)=>{$('#pw').type=t.checked?'text':'password'};
+async function aLoad(){const[hs,ap,ts,bk]=await Promise.all([get('hostels'),get('applications'),soft(get('tickets')),soft(get('bookings'))]);S.AD={...(S.AD||{}),hs,ap,ts,bk}}
+const ATABS={overview:()=>aOverview(),apps:()=>aApps(),res:()=>aRes(),req:()=>aReq(),hostels:()=>aHostels(),plans:()=>window.PE?PE.html():'<div class="card empty">The floor-plan editor did not load. Refresh the page.</div>',mail:()=>aMail(),legacy:()=>aLegacy()};
+async function adminPage(tab){if(!S.tok){view(`<div class="card pd login"><div class="bg">${I('lock',24)}</div><h2>Staff sign in</h2><p class="mu">For the hostel owner and wardens.</p>${FL('pw','Admin password','password','','autocomplete="current-password" data-enter="login"')}<label class="ck"><input type="checkbox" data-act="pwShow"><span>Show password</span></label><button class="btn bp bw" data-act="login">${I('lock',16)}Sign in</button></div>`);setTimeout(()=>$('#pw')?.focus(),60);return}
+ if(!ATABS[tab])tab='overview';if(!S.AD)view(skel(4));if(!S.AD?.hs)await aLoad();
+ if(tab==='res')S.AD.rs=await get('residents');if(tab==='mail')S.AD.set=await get('get_settings');
+ S.AD.tab=tab;view(aFrame(tab,ATABS[tab]()));if(tab==='plans')await window.PE?.init()}
+function rerender(){const t=S.AD.tab;$('#pane').innerHTML=ATABS[t]();$('#atabs').outerHTML=aTabs(t);syncAll()}
+function aTabs(tab){const AD=S.AD,n=AD.ap.filter(a=>a.status==='pending').length,o=AD.ts.filter(t=>t.status!=='done').length;
+ return`<div class="atabs" id="atabs" role="navigation" aria-label="Admin sections">${[['overview','Overview'],['apps','Applications',n],['res','Residents'],['req','Requests',o],['hostels','Hostels'],['plans','Floor plans'],['mail','Email'],...(AD.bk.length?[['legacy','Old bookings']]:[])].map(t=>`<a href="#/admin/${t[0]}" class="${t[0]===tab?'on':''}"${t[0]===tab?' aria-current="page"':''}>${t[1]}${t[2]?`<span class="bdg">${t[2]}</span>`:''}</a>`).join('')}</div>`}
+const aFrame=(tab,body)=>`<div class="atop">${aTabs(tab)}<button class="ib sm" data-act="aRefresh" aria-label="Refresh" title="Refresh">${I('refresh',17)}</button></div><div id="pane">${body}</div>`;
+A.aRefresh=async()=>{if(window.PE?.dirty&&!confirm('Discard unsaved floor plan changes?'))return;window.PE?.reset();await aLoad();await router();toast('Up to date')};
+const av=(a,s=44)=>safe(a.photo_url)?`<img class="av" src="${esc(a.photo_url)}" alt="" width="${s}" height="${s}" loading="lazy" referrerpolicy="no-referrer">`:`<span class="av" style="width:${s}px;height:${s}px">${esc((a.name||'?').trim().charAt(0).toUpperCase())}</span>`;
+const hsel=(act,v)=>S.AD.hs.length>1?`<select class="fi sm" data-chg="${act}" aria-label="Filter by hostel"><option value="">All hostels</option>${S.AD.hs.map(h=>`<option value="${esc(h.id)}"${h.id===v?' selected':''}>${esc(h.name)}</option>`).join('')}</select>`:'';
+const findA=id=>S.AD.ap.find(x=>x.id===id)||S.AD.rs?.find(x=>x.id===id);
+function aOverview(){const AD=S.AD,s={available:0,hold:0,reserved:0,occupied:0,unavailable:0};AD.hs.forEach(h=>Object.keys(s).forEach(k=>s[k]+=(h.stat||{})[k]||0));
+ const tot=Object.values(s).reduce((a,b)=>a+b,0),use=tot-s.unavailable,pend=AD.ap.filter(a=>a.status==='pending'),pay=AD.ap.filter(a=>a.status==='paid'),open=AD.ts.filter(t=>t.status!=='done'),pc=v=>use?v/use*100:0;
+ const T=(n,l,c,href)=>`<a class="card stile" href="${href}"><small>${l}</small><b${c?` style="color:var(${c})"`:''}>${n}</b></a>`;
+ return`<div class="ph"><h1>Overview</h1><p>${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})}</p></div>
+ <div class="stg">${T(pend.length,'To review',pend.length?'--hold':'','#/admin/apps')}${T(pay.length,'Payments to verify',pay.length?'--res':'','#/admin/res')}${T(open.length,'Open requests',open.length?'--occ':'','#/admin/req')}${T(s.available,'Beds free','--ok','#/admin/plans')}${T(s.reserved+s.hold,'Reserved','','#/admin/res')}${T(s.occupied,'Occupied','','#/admin/res')}${T(AD.hs.length,'Hostels','','#/admin/hostels')}</div>
+ ${use?`<div class="card pd occ"><div class="r"><b>Occupancy</b><span class="mu" style="font-size:13.5px">${Math.round(pc(s.occupied))}% occupied · ${Math.round(pc(s.reserved+s.hold))}% reserved · ${use} beds</span></div><div class="meter" role="img" aria-label="${s.occupied} occupied, ${s.reserved+s.hold} reserved, ${s.available} free"><i style="width:${pc(s.occupied)}%;background:var(--occ)"></i><i style="width:${pc(s.reserved+s.hold)}%;background:var(--res)"></i><i style="width:${pc(s.available)}%;background:var(--ok)"></i></div></div>`:''}
+ <div class="sec">Waiting for review</div>${pend.slice(0,5).map(apCard).join('')||'<p class="mu pl4">Nothing waiting. All caught up.</p>'}
+ ${open.length?`<div class="sec">Open requests</div>${open.slice(0,5).map(t=>`<a class="card it lk" href="#/admin/req"><div class="r"><div><b>${esc(t.title)}</b><small>${esc(t.applications?.name||'')} · ${esc(t.hostels?.name||'')} · ${day(t.created_at)}</small></div>${chip(...(TCH[t.status]||TCH.open))}</div></a>`).join('')}`:''}`}
+const apCard=a=>`<div class="card it"><div class="r"><div class="who">${av(a)}<div><b>${esc(a.name)}</b><small>${esc(a.hostels?.name||'')} · applied ${day(a.created_at)}</small><small>${esc(a.phone)} · ${esc(a.email)}</small></div></div>${stc(a.status)}</div><div class="ac"><button class="btn bs bm" data-act="aView" data-id="${esc(a.id)}">View details</button>${a.status==='pending'?`<button class="btn bp bm" data-act="aDec" data-id="${esc(a.id)}" data-s="approved">Approve</button><button class="btn bd2 bm" data-act="aDec" data-id="${esc(a.id)}" data-s="rejected">Reject</button>`:''}</div></div>`;
+const AGR={pending:['pending'],active:['approved','assigned','paid','verified','resident'],closed:['rejected','left'],all:null};
+function aApps(){const AD=S.AD;AD.af=AD.af||(AD.ap.some(a=>a.status==='pending')?'pending':'all');const L=AD.ap.filter(a=>(!AGR[AD.af]||AGR[AD.af].includes(a.status))&&(!AD.ah||a.hostel_id===AD.ah));
+ return`<div class="ph"><h1>Applications</h1><p>${AD.ap.length} in total</p></div><div class="tbar">${segH('aFilt',[['pending','Pending'],['active','In progress'],['closed','Closed'],['all','All']],AD.af)}${hsel('aHs',AD.ah)}</div>${L.map(apCard).join('')||'<div class="card empty">No applications here.</div>'}`}
+A.aFilt=d=>{S.AD.af=d.v;rerender()};A.aHs=(d,t)=>{S.AD.ah=t.value;rerender()};
+A.aView=d=>{const a=findA(d.id);if(!a)return;const R=(l,v)=>v?`<div><span>${l}</span><b>${esc(v)}</b></div>`:'';
+ sheet(a.name,`${a.hostels?.name||''} · applied ${day(a.created_at)}`,`<div class="who" style="margin-bottom:14px">${av(a,64)}<div>${stc(a.status)}</div></div><div class="rv2">${R('Mobile',a.phone)}${R('Email',a.email)}${R('Aadhaar',a.aadhaar)}${R('ID proof',a.id_proof)}${R('Parent or guardian',a.parent_name)}${R('Parent mobile',a.parent_phone)}${R('Permanent address',a.address)}${R('Purpose',a.purpose)}${R('College',a.college)}${R('Office',a.office)}${R('Joining',a.join_date&&day(a.join_date))}${R('Bed',a.beds?.code)}${R('Payment reference',a.paid_ref)}</div>
+ ${safe(a.photo_url)?`<a class="btn bs bw" href="${esc(a.photo_url)}" target="_blank" rel="noopener noreferrer">${I('ext',16)}Open photo</a>`:''}${a.status==='pending'?`<div class="ft2"><button class="btn bd2" data-act="aDec" data-id="${esc(a.id)}" data-s="rejected">Reject</button><button class="btn bp" data-act="aDec" data-id="${esc(a.id)}" data-s="approved">Approve</button></div>`:''}`)};
+A.aDec=async d=>{const a=findA(d.id);if(d.s==='rejected'&&!await confirmUI(`Reject ${a?.name||'this application'}?`,'They will be emailed that the hostel could not approve the application.','Reject','danger'))return;
+ await api('decide',{id:d.id,status:d.s});closeSheet();S.AD.ap=await api('applications');toast(d.s==='approved'?'Approved. The applicant can now choose a bed.':'Application rejected');rerender()};
+function aRes(){const AD=S.AD,L=(AD.rs||[]).filter(a=>!AD.rh||a.hostel_id===AD.rh),V=['Verify payment','rVerify','bp'],F=['Fee and due date','rFee','bs'],O=['Release bed','rOut','bd2'];
+ const acts=a=>({approved:[['Assign bed','rAssign','bp']],assigned:[V,F,O],paid:[V,F,O],verified:[['Check in','rIn','bp'],O],resident:[F,['Check out','rOut','bd2']]}[a.status]||[]);
+ return`<div class="ph"><h1>Residents and payments</h1><p>${L.length} ${L.length===1?'person':'people'}</p></div>${hsel('rHs',AD.rh)?`<div class="tbar">${hsel('rHs',AD.rh)}</div>`:''}${L.map(a=>{const bal=Math.max(0,(a.amount_due||0)-(a.paid_amount||0)),late=a.status==='assigned'&&a.due_at&&new Date(a.due_at)<new Date();
+ return`<div class="card it"><div class="r"><div class="who">${av(a)}<div><b>${esc(a.name)}</b><small>${esc(a.hostels?.name||'')}${a.beds?.code?' · Bed '+esc(a.beds.code):''}${a.status!=='approved'?' · '+(a.plan==='bed_only'?'Bed only':'With food'):''}</small><small>${esc(a.phone)}</small></div></div>${stc(a.status)}</div>
+ ${a.status!=='approved'?`<div class="mini"><div><small>Fee</small><b>${money(a.amount_due)}</b></div><div><small>Paid</small><b>${money(a.paid_amount)}</b></div><div><small>${late?'Overdue since':'Due by'}</small><b${late?' style="color:var(--occ)"':''}>${a.due_at?dt(a.due_at):'-'}</b></div><div><small>Balance</small><b style="color:var(${bal?'--occ':'--ok'})">${bal?money(bal):'Nil'}</b></div></div>`:''}
+ ${a.paid_ref?`<small style="margin-top:10px">Payment reference: <b>${esc(a.paid_ref)}</b></small>`:''}<div class="ac"><button class="btn bs bm" data-act="aView" data-id="${esc(a.id)}">Details</button>${acts(a).map(x=>`<button class="btn ${x[2]} bm" data-act="${x[1]}" data-id="${esc(a.id)}">${x[0]}</button>`).join('')}</div></div>`}).join('')||'<div class="card empty">Nobody here yet. Approve applications first.</div>'}`}
+A.rHs=(d,t)=>{S.AD.rh=t.value;rerender()};
+const resDone=async m=>{closeSheet();toast(m);[S.AD.rs,S.AD.ap]=await Promise.all([api('residents'),api('applications')]);rerender()};
+const dueISO=()=>val('o_d')?new Date(val('o_d')).toISOString():null;
+A.rAssign=async d=>{const a=findA(d.id),p=await api('plan',{hostel_id:a.hostel_id}),bs=S.AD.free=p.beds.filter(b=>b.live==='available');
+ const og=p.floors.map(f=>{const b=bs.filter(x=>x.floor_id===f.id);return b.length?`<optgroup label="${esc(f.name)}">${b.map(x=>`<option value="${esc(x.id)}">${esc(x.code)}${x.price?' · '+money(x.price):''}</option>`).join('')}</optgroup>`:''}).join('');
+ sheet('Assign a bed',a.name,bs.length?`<label class="lb" for="o_b">Bed</label><select class="fi" id="o_b" data-chg="rBed">${og}</select>${FL('o_a','Fee (₹)','number',bs[0].price||'','inputmode="numeric" min="0"')}<label class="lb" for="o_d">Pay before</label><input class="fi" id="o_d" type="datetime-local" value="${local(new Date(Date.now()+3*864e5).toISOString())}"><button class="btn bp bw" data-act="rAssignGo" data-id="${esc(a.id)}">Assign and notify</button>`:`<div class="empty">No free beds in this hostel. Publish more beds in Floor plans.</div>`)};
+A.rBed=(d,t)=>{const b=S.AD.free.find(x=>x.id===t.value);if(b?.price)$('#o_a').value=b.price};
+A.rAssignGo=async d=>{const amt=val('o_a');if(amt===''||!(+amt>=0))fail('o_a','Enter the fee amount');await api('assign',{id:d.id,bed_id:val('o_b'),amount:amt,due_at:dueISO()});resDone('Bed assigned and resident notified')};
+A.rFee=d=>{const a=findA(d.id);sheet('Fee and due date',a.name,`${FL('o_a','Fee (₹)','number',a.amount_due??'','inputmode="numeric" min="0"')}<label class="lb" for="o_d">Pay before</label><input class="fi" id="o_d" type="datetime-local" value="${local(a.due_at)}"><label class="lb" for="o_p">Plan</label><select class="fi" id="o_p"><option value="full"${a.plan!=='bed_only'?' selected':''}>With food</option><option value="bed_only"${a.plan==='bed_only'?' selected':''}>Bed only (no food)</option></select><button class="btn bp bw" data-act="rFeeGo" data-id="${esc(a.id)}">Save</button>`)};
+A.rFeeGo=async d=>{const amt=val('o_a');if(amt===''||!(+amt>=0))fail('o_a','Enter the fee amount');await api('set_fee',{id:d.id,amount:amt,plan:val('o_p'),due_at:dueISO()});resDone('Fee updated')};
+A.rVerify=d=>{const a=findA(d.id);sheet('Verify payment',a.name,`<div class="rv2"><div><span>Fee</span><b>${money(a.amount_due)}</b></div><div><span>Payment reference</span><b>${esc(a.paid_ref||'Not submitted (paid in cash or directly)')}</b></div></div>${FL('o_v','Amount received (₹)','number',a.amount_due??'','inputmode="numeric" min="0"')}<button class="btn bp bw" data-act="rVerifyGo" data-id="${esc(a.id)}">Mark payment as verified</button>`)};
+A.rVerifyGo=async d=>{const v=val('o_v');if(v===''||!(+v>=0))fail('o_v','Enter the amount received');await api('verify',{id:d.id,paid:v});resDone('Payment verified')};
+A.rIn=async d=>{const a=findA(d.id);if(!await confirmUI(`Check in ${a.name}?`,'Marks the bed as occupied and emails a welcome note.','Check in'))return;await api('checkin',{id:d.id});resDone('Checked in')};
+A.rOut=async d=>{const a=findA(d.id),res=a.status==='resident';if(!await confirmUI(res?`Check out ${a.name}?`:`Release the bed held by ${a.name}?`,res?'The bed becomes free for new applicants.':'They have not moved in yet. The bed becomes free and their application closes.',res?'Check out':'Release bed','danger'))return;await api('checkout',{id:d.id});resDone(res?'Checked out':'Bed released')};
+function aReq(){const ts=S.AD.ts;return`<div class="ph"><h1>Requests</h1><p>Maintenance problems reported by residents.</p></div>${Object.keys(TCH).map(k=>{const L=ts.filter(t=>(TCH[t.status]?t.status:'open')===k);return`<div class="sec">${TCH[k][1]} · ${L.length}</div>${L.map(t=>`<div class="card it"><div class="r"><div><b>${esc(t.title)}</b><small>${esc(t.applications?.name||'')} · ${esc(t.hostels?.name||'')} · ${dt(t.created_at)}</small>${t.detail?`<p class="dtl">${esc(t.detail)}</p>`:''}</div>${chip(...TCH[k])}</div>
+ <div class="tkf"><select class="fi sm" id="ts_${esc(t.id)}" aria-label="Status">${Object.keys(TCH).map(s=>`<option value="${s}"${s===k?' selected':''}>${TCH[s][1]}</option>`).join('')}</select><input class="fi sm" id="tr_${esc(t.id)}" placeholder="Reply to the resident" aria-label="Reply" value="${esc(t.reply)}" maxlength="500"><button class="btn bp bm" data-act="tSave" data-id="${esc(t.id)}">Save</button></div></div>`).join('')||'<p class="mu pl4">None.</p>'}`}).join('')}`}
+A.tSave=async d=>{await api('set_ticket',{id:d.id,status:val('ts_'+d.id),reply:val('tr_'+d.id)});S.AD.ts=await api('tickets');toast('Request updated');rerender()};
+function aHostels(){return`<div class="ph r" style="align-items:flex-end;flex-wrap:wrap"><div><h1>Hostels</h1><p>Details shown on the public website.</p></div><button class="btn bp" data-act="hForm">${I('plus',16)}Add hostel</button></div><div class="grid">${S.AD.hs.map(h=>{const n=Object.values(h.stat||{}).reduce((a,b)=>a+b,0);return`<div class="card">${cover(h,1)}<div class="pd" style="padding:14px 18px"><div class="row8" style="margin-bottom:12px">${h.lat!=null?chip('--ok','Map linked'):addrOf(h)?chip('--hold','Map from address'):chip('--na','No location')}${chip('--res',n+' bed'+(n===1?'':'s'))}</div>
+ <div class="row8"><button class="btn bs bm" data-act="hForm" data-id="${esc(h.id)}">${I('edit',15)}Edit</button><a class="btn bs bm" href="#/h/${esc(h.id)}" target="_blank" rel="noopener">${I('ext',15)}View</a><button class="btn bd2 bm" data-act="hDel" data-id="${esc(h.id)}" aria-label="Delete ${esc(h.name)}">${I('trash',15)}</button></div></div></div>`}).join('')||'<div class="card empty" style="grid-column:1/-1">Add your first hostel to begin.</div>'}</div>`}
+A.hForm=d=>{const h=S.AD.hs.find(x=>x.id===d.id)||{};sheet(h.id?'Edit hostel':'Add hostel',h.name||'Shown on the public website',`${FL('f_name','Hostel name','text',h.name)}<div class="g2">${FL('f_city','Area or city','text',h.city)}${FL('f_phone','Owner or reception phone','tel',h.phone)}</div>${TA('f_address','Full address',h.address)}${FL('f_maps_url','Google Maps link','text',h.maps_url)}<p class="fine">Paste a Google Maps share link (long, short or embed code). Leave it empty to place the map from the address.</p>${FL('f_image_url','Cover image link (https://…)','url',h.image_url)}${FL('f_amenities','Facilities, separated by commas','text',h.amenities)}${TA('f_description','Description',h.description)}<button class="btn bp bw" data-act="hSave" data-id="${esc(h.id||'')}">${I('save',16)}Save hostel</button>`)};
+A.hSave=async d=>{if(!val('f_name'))fail('f_name','Hostel name is required');if(val('f_image_url')&&!safe(val('f_image_url')))fail('f_image_url','The image link must start with https://');const p={id:d.id||undefined};['name','city','phone','address','maps_url','image_url','amenities','description'].forEach(k=>p[k]=val('f_'+k));
+ await api('save_hostel',p);closeSheet();S.AD.hs=await api('hostels');S.hs=null;toast('Hostel saved');rerender()};
+A.hDel=async d=>{const h=S.AD.hs.find(x=>x.id===d.id);if(!await confirmUI(`Delete ${h?.name||'this hostel'}?`,'Its floors and beds are removed too. Hostels with bookings or applications cannot be deleted.','Delete','danger'))return;await api('del_hostel',{id:d.id});S.AD.hs=await api('hostels');S.hs=null;toast('Hostel deleted');rerender()};
+function aMail(){const s=S.AD.set||{},ok=s.user&&s.pass;return`<div class="ph"><h1>Email</h1><p>Used for applicant sign-in codes and notifications.</p></div><div class="card pd">${ok?`<div class="note" style="margin:0 0 16px">${I('check',20)}<div>Email is set up. Applicants can sign in with a code.</div></div>`:`<div class="note warn" style="margin:0 0 16px">${I('info',20)}<div><b>Applicants cannot sign in until email is set up.</b> Use a Gmail address with 2-step verification and an app password (Google Account, Security, App passwords).</div></div>`}
+ <div class="g2">${FL('m_user','Gmail address','email',s.user)}${FL('m_pass','Gmail app password','password',s.pass,'autocomplete="new-password"')}</div>${FL('m_from','Sender, e.g. N.N Reddy Hostels <you@gmail.com> (optional)','text',s.from)}${FL('m_admin_email','Send new-application alerts to','email',s.admin_email)}${FL('m_site_url','Website address','url',s.site_url||location.origin)}
+ <div class="row8" style="margin-top:6px"><button class="btn bp" data-act="mSave">${I('save',16)}Save</button><button class="btn bs" data-act="mTest">Send test email</button></div></div>`}
+A.mSave=async()=>{await api('save_settings',Object.fromEntries(['user','pass','from','admin_email','site_url'].map(k=>[k,val('m_'+k)])));S.AD.set=await api('get_settings');toast('Email settings saved');rerender()};
+A.mTest=async()=>{await A.mSave();await api('test_mail');toast('Test email sent. Check the inbox.')};
+const BK={pending:['--hold','Under review'],approved:['--res','Approved'],confirmed:['--ok','Confirmed'],checked_in:['--ok','Checked in'],checked_out:['--na','Checked out'],rejected:['--occ','Rejected'],cancelled:['--occ','Cancelled']};
+const NEXT=b=>({pending:[['approved','Approve','bp'],['rejected','Reject','bs']],approved:[...(b.verification==='verified'?[['confirmed','Confirm admission','bp']]:[['v','Mark verified','bp'],['vf','Verification failed','bs']]),['cancelled','Cancel','bd2']],confirmed:[['checked_in','Check in','bp'],['cancelled','Cancel','bd2']],checked_in:[['checked_out','Check out','bp']]}[b.status]||[]);
+function aLegacy(){return`<div class="ph"><h1>Old bookings</h1><p>Requests from the earlier self-service booking flow.</p></div>${S.AD.bk.map(b=>`<div class="card it"><div class="r"><div><b>${esc(b.name)}</b><small>${esc(b.hostels?.name||'')} · Bed ${esc(b.beds?.code||'-')} · from ${day(b.move_in)} for ${esc(b.months)} mo</small><small>${esc(b.phone)} · ${esc(b.email)}</small></div><div class="row8" style="justify-content:flex-end">${chip(...(BK[b.status]||['--na',b.status]))}${['approved','confirmed'].includes(b.status)?chip(b.verification==='verified'?'--ok':'--hold',b.verification==='verified'?'Verified':'Verification pending'):''}</div></div>
+ <div class="ac">${NEXT(b).map(n=>`<button class="btn ${n[2]} bm" data-act="bkGo" data-id="${esc(b.id)}" data-s="${n[0]}">${n[1]}</button>`).join('')}</div></div>`).join('')}`}
+A.bkGo=async d=>{const p={id:d.id};if(d.s==='v')p.verification='verified';else if(d.s==='vf')p.verification='failed';else p.status=d.s;await api('set_booking',p);S.AD.bk=await api('bookings');toast('Booking updated');rerender()};
+
+/* ---------- router ---------- */
+function go(h){location.hash===h?setTimeout(router):location.hash=h}
+async function router(){const p=location.hash.replace(/^#\/?/,'').split('/').map(x=>{try{return decodeURIComponent(x)}catch(e){return x}}),rt=++S.rt;
+ closeSheet();bar();S.mode=p[0]==='admin'?'admin':'user';$('#app').classList.toggle('wide',S.mode==='admin');document.title='N.N Reddy Hostels';head();navbar(p);scrollTo(0,0);
+ try{if(p[0]==='h'&&p[1])await hostelPage(p[1]);else if(p[0]==='me')await mePage(p[1]||'stay');else if(p[0]==='admin')await adminPage(p[1]||'overview');else await homePage()}
+ catch(e){if(e!==STALE&&rt===S.rt)view(`<div style="margin-top:30px">${lockC('Something went wrong',e.message,`<button class="btn bp" style="margin-top:16px" data-act="retry">Try again</button>`,'info')}</div>`)}}
+A.retry=()=>router();
+let lastHash=location.hash,skipHash=0;
+addEventListener('hashchange',()=>{if(skipHash){skipHash=0;return}
+ if(window.PE?.dirty&&lastHash.startsWith('#/admin/plans')&&!location.hash.startsWith('#/admin/plans')){if(!confirm('Discard unsaved changes on this floor?')){skipHash=1;location.hash=lastHash;return}PE.reset()}
+ lastHash=location.hash;router()});
+head();router();
 </script>
 <script src="/floorplan-pro.js"></script>
-<script src="/flow-ui.js"></script>
-<script src="/ops-ui.js"></script>
 </body></html>

@@ -1,21 +1,28 @@
-"""HostelAtlas step 1 backend: email settings, application form, user login (email / email+OTP),
-gated floor plan. Enable by adding ONE line at the bottom of api/index.py (after `class handler`):
-    import _flow; _flow.install(globals())
-Everything works without email configured; mail is best-effort."""
+"""HostelAtlas applicant flow: email settings, application form, email-code sign-in, gated floor plan.
+Loaded automatically by api/index.py. Applicants prove they own their email with a one-time code before
+any of their data is shown, so Gmail (Admin > Email) must be set up for applicants to sign in.
+Mail for notifications is best-effort: the app keeps working if a message cannot be sent."""
 import time, hmac, secrets, smtplib, ssl, re
 from email.message import EmailMessage
 
-MASK = ('phone', 'parent_phone', 'aadhaar', 'id_proof', 'address', 'photo_url', 'office')
+FIELDS = ('hostel_id', 'name', 'email', 'phone', 'aadhaar', 'parent_name', 'parent_phone', 'id_proof', 'address',
+          'purpose', 'college', 'office', 'join_date', 'photo_url')
+OPEN = 'status=in.(pending,approved,assigned,paid,verified,resident)'
+EMAIL = r'[^@\s|]+@[^@\s|]+\.[^@\s|]+'
+PHONE = r'\+?\d[\d\s-]{8,14}'
+TTL = 600  # seconds an emailed code stays valid
 
 
 def install(g):
-    sb, Fail, q, sign, authed = g['sb'], g['Fail'], g['q'], g['sign'], g['authed']
-    PUB, ADM, old_route = g['PUB'], g['ADM'], g['route']
+    sb, Fail, q, sign, authed, throttle, uid = g['sb'], g['Fail'], g['q'], g['sign'], g['authed'], g['throttle'], g['uid']
+    PUB, ADM = g['PUB'], g['ADM']
     old_hostel, old_hostels = PUB['hostel'], PUB['hostels']
+    usign = lambda p: sign('u|' + p)  # domain-separated from admin tokens and code hashes
+    csign = lambda e, c: sign('otp|' + e + '|' + c)
 
     def cfg():
         r = sb('GET', 'settings?key=eq.mail&select=value')
-        return r[0]['value'] if r else {}
+        return (r[0]['value'] or {}) if r else {}
 
     def mail(to, subj, body):
         c = cfg()
@@ -32,24 +39,35 @@ def install(g):
         except Exception:
             return False
 
-    # ---- user tokens: u.<hex payload>.<sig>, level = basic (email only) or full (OTP verified) ----
-    def umint(email, lvl):
-        p = f'{email}|{lvl}|{int(time.time()) + 7 * 86400}'
-        return 'u.' + p.encode().hex() + '.' + sign(p)
+    def strong():
+        return len(g['SECRET']) >= 16
+
+    # ---- applicant tokens: u.<hex payload>.<sig>, issued only after the emailed code is verified ----
+    def umint(email):
+        if not strong():
+            raise Fail('Server is not configured: set SESSION_SECRET to a long random string.', 500)
+        p = f'{email}|full|{int(time.time()) + 7 * 86400}'
+        return 'u.' + p.encode().hex() + '.' + usign(p)
 
     def uread(h):
         try:
-            _, x, s = h.replace('Bearer ', '').strip().split('.')
+            tag, x, s = (h or '').replace('Bearer ', '').strip().split('.')
             p = bytes.fromhex(x).decode()
-            e, l, t = p.split('|')
-            if int(t) > time.time() and hmac.compare_digest(s, sign(p)):
-                return e, l
+            e, lvl, t = p.split('|')
+            if strong() and tag == 'u' and lvl == 'full' and int(t) > time.time() and hmac.compare_digest(s, usign(p)):
+                return e, lvl
         except Exception:
             pass
         return None, None
 
     def apps_of(email):
         return sb('GET', f'applications?email=eq.{q(email)}&select=*,hostels(name,phone)&order=created_at.desc')
+
+    def email_of(d):
+        e = str(d.get('email') or '').strip().lower()
+        if not re.fullmatch(EMAIL, e):
+            raise Fail('Please enter a valid email address.')
+        return e
 
     # ---- public ----
     def hostels(d):
@@ -62,74 +80,90 @@ def install(g):
     def hostel(d):
         if authed(d['_a']):
             return old_hostel(d)
-        h = sb('GET', f"hostels?id=eq.{q(d.get('id'))}&select=*")
+        h = sb('GET', f"hostels?id=eq.{uid(d.get('id'), 'Hostel')}&select=*")
         if not h:
             raise Fail('Hostel not found', 404)
         return {'hostel': h[0], 'floors': [], 'beds': []}
 
     def apply(d):
-        v = {k: str(d.get(k) or '').strip() for k in ('hostel_id', 'name', 'email', 'phone', 'aadhaar', 'parent_name', 'parent_phone',
-                                                      'id_proof', 'address', 'purpose', 'college', 'office', 'join_date', 'photo_url')}
-        v['email'] = v['email'].lower()
-        if len(v['name']) < 2 or not re.fullmatch(r'[^@\s]+@[^@\s]+\.[^@\s]+', v['email']) \
-                or not re.fullmatch(r'\+?\d[\d\s-]{8,14}', v['phone']) or not v['address']:
+        throttle('apply:' + d['_ip'], 5, 3600)
+        v = {k: str(d.get(k) or '').strip()[:300] for k in FIELDS}
+        v['email'], v['aadhaar'] = v['email'].lower(), re.sub(r'\s', '', v['aadhaar'])
+        if len(v['name']) < 2 or not re.fullmatch(EMAIL, v['email']) \
+                or not re.fullmatch(PHONE, v['phone']) or not v['address']:
             raise Fail('Please enter your name, a valid email, mobile number and permanent address.')
-        if v['aadhaar'] and not re.fullmatch(r'\d{12}', v['aadhaar'].replace(' ', '')):
+        if v['aadhaar'] and not re.fullmatch(r'\d{12}', v['aadhaar']):
             raise Fail('Aadhaar number must be 12 digits.')
+        if v['parent_phone'] and not re.fullmatch(PHONE, v['parent_phone']):
+            raise Fail('Please enter a valid parent mobile number.')
+        if v['photo_url'] and not re.match(r'https?://', v['photo_url'], re.I):
+            raise Fail('Photo link must start with https://')
         v['join_date'] = v['join_date'] if re.fullmatch(r'\d{4}-\d\d-\d\d', v['join_date']) else None
-        row = {k: (x or None) for k, x in v.items()}
-        sb('POST', 'applications', row)
+        v['hostel_id'] = uid(v['hostel_id'], 'Hostel')
+        if not sb('GET', f"hostels?id=eq.{v['hostel_id']}&select=id"):
+            raise Fail('Hostel not found.', 404)
+        if sb('GET', f"applications?email=eq.{q(v['email'])}&hostel_id=eq.{v['hostel_id']}&{OPEN}&select=id"):
+            raise Fail('You already have an open application for this hostel. Sign in with your email to see it.')
+        sb('POST', 'applications', {k: (x or None) for k, x in v.items()})
         c = cfg()
-        mail(c.get('admin_email'), f"New hostel application: {v['name']}", f"{v['name']} ({v['phone']}, {v['email']}) applied. Review it in the admin portal.")
+        mail(c.get('admin_email'), f"New hostel application: {v['name']}",
+             f"{v['name']} ({v['phone']}, {v['email']}) applied. Review it in the admin portal.")
         mail(v['email'], 'We received your hostel application', 'Thank you. The hostel team will review your application. '
-             'Log in with this email address on the website to check your status.')
+             'Sign in on the website with this email address to check your status.')
         return {'ok': 1, 'emailed': bool(c.get('user'))}
 
-    def login_email(d):  # basic access: email only
-        e = str(d.get('email') or '').strip().lower()
-        if not apps_of(e):
-            raise Fail('No application found for this email. Please apply first.', 404)
-        return {'token': umint(e, 'basic'), 'level': 'basic'}
-
     def otp_send(d):
-        e = str(d.get('email') or '').strip().lower()
-        if not apps_of(e):
-            raise Fail('No application found for this email.', 404)
+        e = email_of(d)
+        c = cfg()
+        if not (c.get('user') and c.get('pass')):
+            raise Fail('Email sign-in is not set up yet. Please contact the hostel.', 503)
+        if not strong():
+            raise Fail('Server is not configured: set SESSION_SECRET to a long random string.', 500)
+        throttle('otp:' + d['_ip'], 10, 900)
+        r = sb('GET', f'otps?email=eq.{q(e)}&select=exp')
+        if r and r[0]['exp'] - TTL + 60 > time.time():
+            raise Fail('A code was sent less than a minute ago. Check your inbox and spam folder.', 429)
+        if not sb('GET', f'applications?email=eq.{q(e)}&select=id&limit=1'):
+            return {'ok': 1}  # same answer as success, so the form never reveals who has applied
         code = f'{secrets.randbelow(10**6):06d}'
         sb('DELETE', f'otps?email=eq.{q(e)}')
-        sb('POST', 'otps', {'email': e, 'h': sign(e + code), 'exp': int(time.time()) + 600})
-        if not mail(e, 'Your hostel login code', f'Your code is {code}. It expires in 10 minutes.'):
+        sb('POST', 'otps', {'email': e, 'h': csign(e, code), 'exp': int(time.time()) + TTL, 'tries': 0})
+        if not mail(e, f'{code} is your hostel sign-in code', f'Your code is {code}. It expires in 10 minutes.\n'
+                    'If you did not ask for it, you can ignore this email.'):
             sb('DELETE', f'otps?email=eq.{q(e)}')
-            raise Fail('Email is not set up yet, so a code cannot be sent. You can still continue with basic access.')
+            raise Fail('The code could not be emailed right now. Please try again shortly.', 502)
         return {'ok': 1}
 
     def otp_verify(d):
-        e, code = str(d.get('email') or '').strip().lower(), str(d.get('code') or '').strip()
+        e, code = email_of(d), str(d.get('code') or '').strip()
+        throttle('otpv:' + d['_ip'], 30, 900)
         r = sb('GET', f'otps?email=eq.{q(e)}&select=*')
-        if not r or r[0]['exp'] < time.time() or r[0]['tries'] >= 5:
-            raise Fail('Code expired. Please request a new one.', 401)
-        if not hmac.compare_digest(r[0]['h'], sign(e + code)):
-            sb('PATCH', f'otps?email=eq.{q(e)}', {'tries': r[0]['tries'] + 1})
+        n = r[0]['tries'] if r else None
+        if not r or r[0]['exp'] < time.time() or (n or 0) >= 5:
+            raise Fail('This code has expired. Please request a new one.', 401)
+        # claim the attempt first (compare-and-set on tries), so parallel guesses cannot beat the limit
+        cas = 'tries=is.null' if n is None else f'tries=eq.{n}'
+        if not sb('PATCH', f'otps?email=eq.{q(e)}&{cas}', {'tries': (n or 0) + 1}):
+            raise Fail('Please try again.', 409)
+        if not re.fullmatch(r'\d{6}', code) or not hmac.compare_digest(r[0]['h'], csign(e, code)):
             raise Fail('Incorrect code.', 401)
         sb('DELETE', f'otps?email=eq.{q(e)}')
-        return {'token': umint(e, 'full'), 'level': 'full'}
+        return {'token': umint(e), 'email': e}
 
     def me(d):
-        e, lvl = uread(d['_a'])
+        e, _ = uread(d['_a'])
         if not e:
-            raise Fail('Please log in again.', 401)
-        out = apps_of(e)
-        if lvl != 'full':  # personal details hidden without OTP
-            for a in out:
-                for k in MASK:
-                    a[k] = None
-        return {'level': lvl, 'email': e, 'apps': out}
+            raise Fail('Please sign in again.', 401)
+        return {'email': e, 'apps': apps_of(e)}
 
     def plan(d):  # floor map + availability: only for approved applicants (or admin)
-        hid = str(d.get('hostel_id') or '')
-        e, _ = uread(d['_a'])
-        if not authed(d['_a']) and not (e and any(a['status'] == 'approved' and a['hostel_id'] == hid for a in apps_of(e))):
-            raise Fail('The floor plan is available after the hostel approves your application.', 403)
+        hid = uid(d.get('hostel_id'), 'Hostel')
+        if not authed(d['_a']):
+            e, _ = uread(d['_a'])
+            if not e:
+                raise Fail('Please sign in again.', 401)
+            if not any(a['status'] == 'approved' and a['hostel_id'] == hid for a in apps_of(e)):
+                raise Fail('The floor plan is available after the hostel approves your application.', 403)
         return old_hostel({'id': hid})
 
     # ---- admin ----
@@ -140,10 +174,16 @@ def install(g):
 
     def save_settings(d):
         old = cfg()
-        new = {k: str(d.get(k) or '').strip() for k in ('user', 'pass', 'from', 'admin_email', 'site_url')}
+        new = {k: str(d.get(k) or '').strip()[:200] for k in ('user', 'pass', 'from', 'admin_email', 'site_url')}
+        for k in ('user', 'admin_email'):
+            if new[k] and not re.fullmatch(EMAIL, new[k]):
+                raise Fail('Please enter valid email addresses.')
         if new['pass'] in ('', '********'):
             new['pass'] = old.get('pass', '')
-        sb('POST', 'settings?on_conflict=key', {'key': 'mail', 'value': new}) if not old else sb('PATCH', 'settings?key=eq.mail', {'value': new})
+        if sb('GET', 'settings?key=eq.mail&select=key'):
+            sb('PATCH', 'settings?key=eq.mail', {'value': new})
+        else:
+            sb('POST', 'settings', {'key': 'mail', 'value': new})
         return {'ok': 1}
 
     def test_mail(d):
@@ -153,26 +193,24 @@ def install(g):
         return {'ok': 1}
 
     def applications(d):
-        return sb('GET', 'applications?select=*,hostels(name)&order=created_at.desc&limit=300')
+        return sb('GET', 'applications?select=*,hostels(name)&order=created_at.desc&limit=500')
 
     def decide(d):
         st = d.get('status')
         if st not in ('approved', 'rejected'):
             raise Fail('Invalid status.')
-        a = sb('PATCH', f"applications?id=eq.{q(d.get('id'))}", {'status': st})
-        if a:
-            site = cfg().get('site_url', '')
-            mail(a[0]['email'], 'Your hostel application', ('Approved! Log in with this email on ' + site + ' to view the floor plan and choose a bed.')
-                 if st == 'approved' else 'Sorry, the hostel could not approve your application.')
+        a = sb('PATCH', f"applications?id=eq.{uid(d.get('id'), 'Application')}&status=eq.pending", {'status': st})
+        if not a:
+            raise Fail('This application was already decided. Refresh to see its status.', 409)
+        site = cfg().get('site_url') or 'the hostel website'
+        mail(a[0]['email'], 'Your hostel application',
+             f'Approved! Sign in with this email on {site} to view the floor plan and choose your bed.'
+             if st == 'approved' else 'Sorry, the hostel could not approve your application.')
         return {'ok': 1}
 
     g['_h'] = dict(mail=mail, uread=uread, apps_of=apps_of, cfg=cfg)
-    PUB.update(hostels=hostels, hostel=hostel, apply=apply, login_email=login_email, otp_send=otp_send,
-               otp_verify=otp_verify, me=me, plan=plan)
+    for k in ('book', 'track', 'login_email'):  # replaced by applications and email-code sign-in
+        PUB.pop(k, None)
+    PUB.update(hostels=hostels, hostel=hostel, apply=apply, otp_send=otp_send, otp_verify=otp_verify, me=me, plan=plan)
     ADM.update(get_settings=get_settings, save_settings=save_settings, test_mail=test_mail,
                applications=applications, decide=decide)
-
-    def route(d, auth):
-        d['_a'] = auth
-        return old_route(d, auth)
-    g['route'] = route

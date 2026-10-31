@@ -1,6 +1,8 @@
 """N.N Reddy Hostels (HostelAtlas) - single serverless API for Vercel.
 Standard library only, so no requirements.txt is needed. All calls: POST /api/index {"a": "<action>", ...}
-Environment variables: SUPABASE_URL, SUPABASE_SERVICE_KEY, ADMIN_PASSWORD, SESSION_SECRET (optional), HOLD_HOURS (optional)."""
+Environment variables: SUPABASE_URL, SUPABASE_SERVICE_KEY, ADMIN_PASSWORD, SESSION_SECRET, HOLD_HOURS (optional).
+Access: PUB actions are open (catalogue, applying, signing in); applicant actions check a signed applicant token
+issued only after an emailed code is verified; ADM actions check a signed admin token. Sign-in actions are rate limited."""
 import json, os, re, hmac, time, hashlib, urllib.request, urllib.parse, urllib.error
 from http.server import BaseHTTPRequestHandler
 
@@ -36,8 +38,44 @@ def sb(method, path, body=None):
         except Exception:
             m = None
         if m and 'violates foreign key' in m:
-            m = 'This item has bookings and cannot be deleted. Cancel or check out its bookings first.'
+            m = 'This item has bookings or applications and cannot be deleted. Close them first.'
+        elif m and 'applications_one_live_bed' in m:
+            m = 'That bed was just taken by someone else. Please pick another.'
         raise Fail(m or 'Database error')
+
+
+def num(v, default=0):
+    """Lenient integer parse for amounts and levels typed by people ("6,000", "6000.0")."""
+    try:
+        return int(float(re.sub(r'[,\s]', '', str(v))))
+    except (TypeError, ValueError, OverflowError):
+        return default
+
+
+def uid(v, what='Record'):
+    """Validate a row id before it reaches a query, so bad input gets a clean 404 instead of a database error."""
+    v = str(v or '').strip()
+    if not re.fullmatch(r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', v):
+        raise Fail(f'{what} not found.', 404)
+    return v
+
+
+def throttle(key, limit, window):
+    """Allow `limit` calls per `window` seconds for a key (rows 'rl:<key>' in the otps table).
+    Fails open if that table is missing, so a database problem never locks everyone out."""
+    k, now = 'rl:' + key, int(time.time())
+    try:
+        r = sb('GET', f'otps?email=eq.{q(k)}&select=exp,tries')
+        if not r or r[0]['exp'] < now:
+            sb('DELETE', f'otps?email=eq.{q(k)}')
+            sb('POST', 'otps', {'email': k, 'h': '-', 'exp': now + window, 'tries': 1})
+        elif (r[0]['tries'] or 0) >= limit:
+            raise Fail('Too many attempts. Please wait a few minutes and try again.', 429)
+        else:
+            sb('PATCH', f'otps?email=eq.{q(k)}', {'tries': (r[0]['tries'] or 0) + 1})
+    except Fail as e:
+        if e.code == 429:
+            raise
 
 
 # ---- admin session tokens (HMAC signed, 24h) ----
@@ -50,7 +88,7 @@ def mint():
 
 
 def authed(header):
-    p, _, s = header.replace('Bearer ', '').strip().partition('.')
+    p, _, s = (header or '').replace('Bearer ', '').strip().partition('.')
     return bool(PW) and p.isdigit() and int(p) > time.time() and hmac.compare_digest(s, sign(p))
 
 
@@ -65,7 +103,8 @@ def geo(u):
     if not u:
         return None, None
     try:
-        if re.search(r'goo\.gl|maps\.app', u):  # short link: follow redirect
+        host = urllib.parse.urlparse(u).hostname or ''
+        if host == 'goo.gl' or host.endswith('.goo.gl'):  # short link: follow redirect (only to Google)
             u = urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'}), timeout=6).geturl()
     except Exception:
         pass
@@ -94,7 +133,7 @@ def hostels(d):
 
 
 def hostel(d):
-    i = q(d.get('id'))
+    i = uid(d.get('id'), 'Hostel')
     h = sb('GET', f'hostels?id=eq.{i}&select=*')
     if not h:
         raise Fail('Hostel not found', 404)
@@ -110,10 +149,7 @@ def book(d):
     mi = str(d.get('move_in') or '')
     if not re.fullmatch(r'\d{4}-\d\d-\d\d', mi):
         raise Fail('Please choose a move-in date.')
-    try:
-        months = min(max(int(d.get('months') or 1), 1), 24)
-    except ValueError:
-        months = 1
+    months = min(max(num(d.get('months'), 1), 1), 24)
     ref = sb('POST', 'rpc/request_bed', {'p_bed': d.get('bed_id'), 'p_name': n, 'p_email': e.lower(), 'p_phone': p,
                                          'p_move_in': mi, 'p_months': months, 'p_hold_hours': HOLD})
     x = sb('GET', f'bookings?id=eq.{q(ref)}&select=hostels(name,phone)')
@@ -134,24 +170,28 @@ def bookings(d):
 
 
 def set_booking(d):
-    sb('POST', 'rpc/set_booking', {'p_id': d.get('id'), 'p_status': d.get('status'), 'p_verif': d.get('verification')})
+    sb('POST', 'rpc/set_booking', {'p_id': uid(d.get('id'), 'Booking'), 'p_status': d.get('status'), 'p_verif': d.get('verification')})
     return {'ok': 1}
 
 
 def save_hostel(d):
-    f = {k: (str(d.get(k) or '').strip() or None)
+    f = {k: (str(d.get(k) or '').strip()[:2000] or None)
          for k in ('name', 'city', 'phone', 'address', 'description', 'image_url', 'amenities', 'maps_url')}
     if not f['name']:
         raise Fail('Hostel name is required.')
+    if f['image_url'] and not re.match(r'https?://', f['image_url'], re.I):
+        raise Fail('Cover image link must start with https://')
     f['maps_url'] = clean_map(f['maps_url']) or None
     f['lat'], f['lng'] = geo(f['maps_url'])
     hid = d.get('id')
-    r = sb('PATCH', f'hostels?id=eq.{q(hid)}', f) if hid else sb('POST', 'hostels', f)
+    r = sb('PATCH', f"hostels?id=eq.{uid(hid, 'Hostel')}", f) if hid else sb('POST', 'hostels', f)
+    if not r:
+        raise Fail('Hostel not found.', 404)
     return r[0]
 
 
 def del_hostel(d):
-    sb('DELETE', f"hostels?id=eq.{q(d.get('id'))}")
+    sb('DELETE', f"hostels?id=eq.{uid(d.get('id'), 'Hostel')}")
     return {'ok': 1}
 
 
@@ -159,49 +199,81 @@ def save_floor(d):
     name = str(d.get('name') or '').strip()
     if not name:
         raise Fail('Floor name is required.')
-    f = {'name': name, 'level': int(d.get('level') or 0)}
+    f = {'name': name[:60], 'level': num(d.get('level'))}
     if d.get('id'):
-        return sb('PATCH', f"floors?id=eq.{q(d['id'])}", f)[0]
-    return sb('POST', 'floors', {**f, 'hostel_id': d.get('hostel_id'), 'layout': {'objs': []}})[0]
+        r = sb('PATCH', f"floors?id=eq.{uid(d['id'], 'Floor')}", f)
+        if not r:
+            raise Fail('Floor not found.', 404)
+        return r[0]
+    return sb('POST', 'floors', {**f, 'hostel_id': uid(d.get('hostel_id'), 'Hostel'), 'layout': {'objs': []}})[0]
 
 
 def del_floor(d):
-    sb('DELETE', f"floors?id=eq.{q(d.get('id'))}")
+    sb('DELETE', f"floors?id=eq.{uid(d.get('id'), 'Floor')}")
     return {'ok': 1}
+
+
+TYPES = {'room', 'corridor', 'bed', 'washroom', 'door', 'window', 'stairs', 'lift', 'fan', 'light', 'rack', 'balcony'}
+
+
+def coord(v):
+    try:
+        f = float(v)
+    except (TypeError, ValueError):
+        return 0
+    return round(min(max(f, -1e5), 1e5), 2) if f == f else 0  # f != f only for NaN
 
 
 def save_layout(d):
     L = d.get('layout') or {}
-    objs = L.get('objs') or []
+    objs = L.get('objs') or [] if isinstance(L, dict) else None
+    if not isinstance(objs, list):
+        raise Fail('Invalid layout.')
     if len(objs) > 1000:
         raise Fail('Too many objects on one floor (limit 1000).')
-    fl = sb('GET', f"floors?id=eq.{q(d.get('floor_id'))}&select=hostel_id")
+    fid = uid(d.get('floor_id'), 'Floor')
+    fl = sb('GET', f'floors?id=eq.{fid}&select=hostel_id')
     if not fl:
         raise Fail('Floor not found.', 404)
-    beds = {}
-    for o in objs:
-        if o.get('t') == 'bed':
-            c = str(o.get('code') or '').strip()
-            if not c:
+    # Plans are shown to applicants, so store only known fields with clean values (no markup can ride along).
+    clean, beds = [], {}
+    for i, o in enumerate(objs):
+        if not isinstance(o, dict) or o.get('t') not in TYPES:
+            raise Fail('The plan contains an unknown object type.')
+        c = {'id': re.sub(r'[^\w-]', '', str(o.get('id') or ''))[:40] or f'o{i}', 't': o['t'],
+             'x': coord(o.get('x')), 'y': coord(o.get('y')), 'w': max(coord(o.get('w')), 1), 'h': max(coord(o.get('h')), 1),
+             'r': coord(o.get('r')), 'l': str(o.get('l') or '')[:80]}
+        if c['t'] == 'bed':
+            code = str(o.get('code') or '').strip()[:40]
+            if not code:
                 raise Fail('Every bed needs a bed code.')
-            beds[c] = {'code': c, 'price': max(int(o.get('price') or 0), 0)}
-    sb('PATCH', f"floors?id=eq.{q(d['floor_id'])}", {'layout': {'objs': objs}})
-    sb('POST', 'rpc/sync_beds', {'p_floor': d['floor_id'], 'p_hostel': fl[0]['hostel_id'], 'p_beds': list(beds.values())})
+            if code in beds:
+                raise Fail(f'Bed code {code} is used more than once on this floor.')
+            c['code'], c['price'] = code, max(num(o.get('price')), 0)
+            beds[code] = {'code': code, 'price': c['price']}
+        clean.append(c)
+    sb('PATCH', f'floors?id=eq.{fid}', {'layout': {'objs': clean}})
+    sb('POST', 'rpc/sync_beds', {'p_floor': fid, 'p_hostel': fl[0]['hostel_id'], 'p_beds': list(beds.values())})
     return {'ok': 1, 'beds': len(beds)}
 
 
-PUB = {'hostels': hostels, 'hostel': hostel, 'book': book, 'track': track}
+PUB = {'hostels': hostels, 'hostel': hostel}  # book/track are kept for the legacy bookings table but no longer public
 ADM = {'bookings': bookings, 'set_booking': set_booking, 'save_hostel': save_hostel, 'del_hostel': del_hostel,
        'save_floor': save_floor, 'del_floor': del_floor, 'save_layout': save_layout}
 
 
 def route(d, auth):
+    if not isinstance(d, dict):
+        raise Fail('Bad request.')
     a = d.get('a')
     if a == 'login':
+        throttle('admin:' + d.get('_ip', ''), 10, 900)
         if PW and hmac.compare_digest(str(d.get('password', '')).encode(), PW.encode()):
             return {'token': mint()}
         raise Fail('Incorrect password.', 401)
     if a in PUB:
+        if LOAD_ERR:  # fail closed: without the access rules in _flow/_ops, public calls could expose too much
+            raise Fail('The server is updating. Please try again in a few minutes.', 503)
         return PUB[a](d)
     if a in ADM:
         if not authed(auth):
@@ -210,13 +282,23 @@ def route(d, auth):
     raise Fail('Unknown action.', 404)
 
 
+def client_ip(h):
+    return (h.get('x-real-ip') or h.get('x-forwarded-for') or '').split(',')[0].strip() or 'unknown'
+
+
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         try:
             n = int(self.headers.get('content-length') or 0)
             if n > 2_000_000:
                 raise Fail('Request too large.', 413)
-            out, code = route(json.loads(self.rfile.read(n) or b'{}'), self.headers.get('authorization', '')), 200
+            try:
+                d, auth = json.loads(self.rfile.read(n) or b'{}'), self.headers.get('authorization', '')
+            except ValueError:
+                raise Fail('Bad request.')
+            if isinstance(d, dict):  # set server-side, so a client can never supply its own
+                d['_a'], d['_ip'] = auth, client_ip(self.headers)
+            out, code = route(d, auth), 200
         except Fail as e:
             out, code = {'error': str(e)}, e.code
         except Exception:
@@ -225,6 +307,7 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(code)
         self.send_header('Content-Type', 'application/json')
         self.send_header('Cache-Control', 'no-store')
+        self.send_header('X-Content-Type-Options', 'nosniff')
         self.send_header('Content-Length', str(len(b)))
         self.end_headers()
         self.wfile.write(b)
@@ -245,4 +328,4 @@ def _load(name):
 
 _load('_flow')
 _load('_ops')
-PUB['diag'] = lambda d: {'errors': LOAD_ERR, 'files': sorted(os.listdir(HERE))}
+ADM['diag'] = lambda d: {'errors': LOAD_ERR, 'files': sorted(os.listdir(HERE))}  # admin only: tracebacks are internal
